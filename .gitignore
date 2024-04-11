@@ -1,0 +1,9 @@
+.g2scli-venv/
+.settings/
+.project/
+.pydevproject/
+__pycache__/
+*.py[cod]
+*.swp
+.git-token
+
