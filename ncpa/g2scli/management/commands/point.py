@@ -1,96 +1,70 @@
-from ncpa.g2scli.commands import BaseCommand
+from ncpa.g2scli.commands import BaseCommand, docstring_parameter
 from ncpa.g2scli.settings import config
 from ncpa.g2scli.urls import format_url
+from ncpa.g2scli.version import get_parent_name
 from ncpa.util import writer
 
 import logging
 from datetime import datetime, timezone
 from urllib import request
 import re
+import json
+import sys
 
-# patch HTTPResponse
-# from http.client import IncompleteRead, HTTPResponse
-# def patch_http_response_read(func):
-#     def inner(args):
-#         try:
-#             return func(args)
-#         except IncompleteRead as e:
-#             return e.partial
-#     return inner
-# HTTPResponse.read = patch_http_response_read(HTTPResponse.read)
+from ncpa.g2scli.options import add_date_arguments, parse_datetimes, add_point_location_arguments
 
 ZIP_RE = re.compile('.*filename="?(.+\.zip)')
 
+@docstring_parameter(get_parent_name())
 class Command(BaseCommand):
-    help = "Extract a single point from the G2S archive"
+    '''Request a single point from the G2S archive and return it in a text format.
+    
+    A location and one or more date(s) and time(s) are required.  The resulting 
+    profile is returned as plain text in the format specified.
+    '''
+    
+    examples = [
+        '%(prog)s --date 2023-07-04 --hour 12 --lat 37.867 --lon -122.259',
+        
+        '''%(prog)s --date 2023-07-04 --hour 12 --lat 37.867 --lon -122.259
+        --outputformat ncpaprop --output rasputin.dat --logfile /tmp/point.log
+        --verbosity debug
+        '''
+    ]
     
     def add_arguments(self,parser):
+        add_date_arguments(parser,single=True,requiresingle=True,multiple=False)
+        add_point_location_arguments(parser,required=True)
         parser.add_argument(
-            "--year", nargs='?', required=True, type=int, help="Year"
+            "--outputformat", nargs=1, choices=['ncpaprop','json'], default='json', help='Output format'
         )
         parser.add_argument(
-            "--month", nargs='?', required=True, type=int, help="Month (1-12)"
-        )
-        parser.add_argument(
-            "--day", nargs='?', required=True, type=int, help="Day (1-31)"
-        )
-        parser.add_argument(
-            "--hour", nargs='?', required=True, type=int, help="Hour (0-23)"
-        )
-        parser.add_argument(
-            "--lat", nargs='?', required=True, help="Location for profile"
-        )
-        parser.add_argument(
-            "--lon", nargs='?', required=True, type=float, help="Location for profile"
-        )
-        parser.add_argument(
-            "--outputformat", nargs='?', choices=['ncpaprop','json'], default='json', help='Output format'
-        )
-        parser.add_argument(
-            "--output", nargs='?', default=None, help='Output file (stdout or point_request.zip depending on response type)'
+            "--pretty", action='store_true', help='After retrieval, reload and reprint in pretty format (JSON only)'
         )
         
     def handle(self,*args,**options):
-        
-        # starttime = options.get("time")
-        # latitude = options.get("latitude")
-        # longitude = options.get("longitude")
-        # output_format = options.get("format")
-        # output = options.get("output")
-        #
-        # try:
-        #     t0 = datetime.fromisoformat(starttime).replace(tzinfo=timezone.utc)
-        #     logging.debug(f'Parsed start time as {t0}')
-        # except ValueError:
-        #     logging.error(f'Start date/time {starttime} not in parseable format')
-        #     exit(1)
-        #
-        # url = 'https://g2s.ncpa.olemiss.edu/g2sv2/g2sdb/extract/{year}/{month}/{day}/{hour}/{lat}/{lon}/{form}/'.format(
-        #     year=t0.year,
-        #     month=t0.month,
-        #     day=t0.day,
-        #     hour=t0.hour,
-        #     lat=latitude,
-        #     lon=longitude,
-        #     form=output_format,
-        # )
-        # with writer(output) as out:
-        #     with request.urlopen(url, timeout=30 ) as response:
-        #         out.write(response.read().decode('utf-8'))
         logger = self.setup_logging(loggername=__name__,*args,**options)
-        url = format_url('point',**options)
+        
+        times = parse_datetimes(options)
+        if len(times) > 1:
+            raise ValueError(f'{__name__} accepts only one date and time')
+        
+        url = format_url('point', time=times[0], **options)
         logger.info(f'Built URL={url}')
+        
+        
         with writer(options.get('output')) as out:
-            logger.debug(f'Writing JSON to {options.get("output") if options.get("output") else "stdout"}')
+            logger.debug(f'Writing to {options.get("output") if options.get("output") else "stdout"}')
             with request.urlopen(url, timeout=config['requests'].getint('timeout') ) as response:
                 logger.debug(f'Received response: status code {response.status}')
                 while chunk := response.read(config['requests'].getint('chunksize')):
                     logger.debug(f'Read chunk of {len(chunk)} bytes')
                     out.write(chunk.decode(config['requests'].get('encoding')))
         
-        # with writer(options.get('output')) as out:
-        #     with request.urlopen(url, timeout=30) as response:
-        #         while chunk := response.read(200):
-        #             out.write(chunk.decode('utf-8'))
+        if options.get('pretty') and options.get('outputformat') == 'json' and options.get('output'):
+            with open(options.get('output'),'rt') as fid:
+                contents = json.load(fid)
+            with open(options.get('output'),'wt') as fid:
+                fid.write(json.dumps(contents,indent=4))
             
         

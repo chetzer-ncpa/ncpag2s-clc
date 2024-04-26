@@ -383,6 +383,10 @@ class G2SReader:
             loc = Location(lat,lon)
         else:
             loc = location
+        try:
+            tag = loc.name
+        except AttributeError:
+            tag = None
         nz = int(zmax/dz) + 1
         (z0, z, t, u, v, r, p) = self.read_from_nrlg2s(loc.lat,loc.lon,dz,nz)
         profile = G2SProfile(
@@ -391,6 +395,7 @@ class G2SReader:
             dz=dz,
             location=loc,
             time=self.loaded_.time,
+            tag=tag,
         )
         profile.add_parameter(G2SParameter(code='Z0',description='Ground Height',units='km',values=[z0]))
         profile.add_parameter(G2SParameter(code='Z',description='Height',units='km',values=z))

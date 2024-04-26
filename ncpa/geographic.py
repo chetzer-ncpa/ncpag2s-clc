@@ -22,7 +22,7 @@ import math
 
 # convenience class for associating a latitude, longitude, and optional name
 class Location:
-    def __init__(self, lat, lon, name=''):
+    def __init__(self, lat, lon, name=None):
         self.lat = lat
         self.lon = lon
         self.name = name
@@ -35,6 +35,8 @@ class Location:
     def longitude(self):
         return self.lon
         
+    def __str__(self):
+        return f'{self.name + ": " if self.name else ""}[ {self.lat:0.5f}, {self.lon:0.5f} ]' 
 
 # Normalizes a longitude to the range [-pi,pi]
 def NormalizeLongitude( lon ):

@@ -1,6 +1,9 @@
 import re
+import os
+import sys
 
-
+def get_parent_name():
+    return os.path.basename(os.path.realpath(sys.argv[0])) 
 
 def get_version(version=None):
     """Return a PEP 440-compliant version number from VERSION."""

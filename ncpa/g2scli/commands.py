@@ -12,7 +12,7 @@ from argparse import ArgumentParser, HelpFormatter
 import functools
 import pkgutil
 from importlib import import_module
-from io import TextIOBase
+from io import TextIOBase, StringIO
 from collections import defaultdict
 from difflib import get_close_matches
 
@@ -21,6 +21,44 @@ from ncpa.g2scli.settings import config
 
 ALL_CHECKS = "__all__"
 
+class MultiLineCommandFormatter(HelpFormatter):
+    def _fill_text(self, text, width, indent):
+        markedlines = []
+        for cmd in text:
+            if '%(prog)' in cmd:
+                cmd = cmd % dict(prog=self._prog)
+            cmd = self._whitespace_matcher.sub(' ', cmd).strip()
+            import textwrap
+            lines = textwrap.wrap(text=cmd,
+                                  width=width-2,
+                                  initial_indent=indent,
+                                  subsequent_indent=indent+' '*self._indent_increment)
+            markedlines.extend([line + ' \\' for line in lines[:-1]])
+            markedlines.append(lines[-1]+'\n')
+        return "\n".join(markedlines)
+
+class ParserWithExamples(ArgumentParser):
+    def __init__(self,examples=None,example_formatter_class=MultiLineCommandFormatter,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self._example_str = examples
+        self.example_formatter_class = example_formatter_class
+        
+    def print_examples(self, file=None):
+        if file is None:
+            file = sys.stdout
+        self._print_message(self.format_examples(), file)
+        
+    def print_help(self, file=None):
+        super().print_help(file=file)
+        self.print_examples(file)
+        
+    def format_examples(self):
+        formatter = self._get_example_formatter()
+        formatter.add_text(self._example_str)
+        return '\nExamples:\n' + formatter.format_help()
+    
+    def _get_example_formatter(self):
+        return self.example_formatter_class(prog=self.prog)
 
 class CommandError(Exception):
     """
@@ -47,7 +85,7 @@ class SystemCheckError(CommandError):
     pass
 
 
-class CommandParser(ArgumentParser):
+class CommandParser(ParserWithExamples):
     """
     Customized ArgumentParser class to improve some error messages and prevent
     SystemExit in several occasions, as SystemExit is unacceptable when a
@@ -204,6 +242,7 @@ class BaseCommand:
 
     # Metadata about this command.
     help = ""
+    examples = ""
 
     # Configuration shortcuts that alter various logic.
     _called_from_command_line = False
@@ -231,11 +270,15 @@ class BaseCommand:
         Create and return the ``ArgumentParser`` which will be used to
         parse the arguments to this command.
         """
+        docstring = StringIO()
+        print(self.__doc__,file=docstring)
         parser = CommandParser(
             prog="%s %s" % (os.path.basename(prog_name), subcommand),
-            description=self.help or None,
+            description=self.help or self.__doc__ or None,
+            # formatter_class=NewlinePreservingHelpFormatter,
             missing_args_message=getattr(self, "missing_args_message", None),
             called_from_command_line=getattr(self, "_called_from_command_line", None),
+            examples=self.examples or None,
             **kwargs,
         )
         self.add_base_argument(
@@ -245,6 +288,7 @@ class BaseCommand:
             version=self.get_version(),
             help="Show program's version number and exit.",
         )
+        self.add_arguments(parser)
         self.add_base_argument(
             parser,
             "-v",
@@ -279,6 +323,14 @@ class BaseCommand:
             )
         self.add_base_argument(
             parser,
+            "--output", 
+            nargs='?',
+            type=str,
+            default=None, 
+            help='Output file or directory, as appropriate'
+        )
+        self.add_base_argument(
+            parser,
             "--pythonpath",
             help=(
                 "A directory to add to the Python path, e.g. "
@@ -291,7 +343,7 @@ class BaseCommand:
             action="store_true",
             help="Raise on CommandError exceptions.",
         )
-        self.add_arguments(parser)
+        # self.add_arguments(parser)
         return parser
 
     def add_arguments(self, parser):
@@ -357,7 +409,7 @@ class BaseCommand:
                     logargs[k] = v
         logging.basicConfig(
             format='%(asctime)s|%(levelname)-8s|%(message)s',
-            level=getattr(logging, options.get('verbosity').upper()),
+            level=logging.CRITICAL,
             encoding='utf-8',
             datefmt='%Y%m%d %H%M%S',
             **logargs
@@ -379,7 +431,7 @@ class BaseCommand:
             hout.setLevel(getattr(logging, options.get('verbosity').upper()))
             logger.addHandler(hout)
             logger.addHandler(herr)
-        logger.propagate = False
+        logger.propagate = True
         return logger
 
     def execute(self, *args, **options):
@@ -672,4 +724,9 @@ class ModularCommand:
 
 
 
-
+def docstring_parameter(*sub):
+    '''Decorator to insert variables into docstrings.'''
+    def dec(obj):
+        obj.__doc__ = obj.__doc__.format(*sub)
+        return obj
+    return dec
