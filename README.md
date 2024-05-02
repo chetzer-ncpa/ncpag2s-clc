@@ -21,6 +21,18 @@ Output destinations and formats can be specified with `--output` and `--outputfo
 
 Currently two output formats are supported.  **ncpaprop** format returns profiles in the custom format used by the [**ncpaprop**](https://github.com/chetzer-ncpa/ncpaprop-release/) propagation package, but is limited to one profile per file; multi-profile formats requested in **ncpaprop** format require that `--output` be used to specify a directory where the returned files and directories will be written.  Alternately, a custom JSON format has been developed that supports single profiles as well as multi-location profile sets.  Details of the JSON format are available in the user manual.
 
+Absent specific instructions, the client will default to the following behavior:
+
+- **For JSON requests**:
+  **`--output` flag absent:** Output will print to the screen.
+  **`--output <filename>`:** Output will be written to the file, truncating any existing contents.
+  **`--output <directoryname>`:** Output will be written to a file in the specified directory, with the filename format dependent on the type of request.
+- **For NCPAprop requests**
+  **`--output` flag absent:** If a single profile is returned, output will print to the screen.  If multiple profiles are returned, output will be written to descriptively-named files in the current directory.
+  **`--output <filename>`:** If a single profile is returned, output will be written to the file, truncating any existing contents.  If multiple profiles are returned, an error will be reported.
+  **`--output <directoryname>`:** Output will be written to files in the specified directory, with the filename format dependent on the type of request.  In the case of `line` or `grid` requests, a summary file will be created.  The individual profiles will be placed in a subdirectory of the specified directory, which will be created if absent.
+
+
 ## Request Types
 The command-line client supports the following types of requests, all of which currently, or will eventually, support multiple times:
 
