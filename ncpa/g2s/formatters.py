@@ -1,11 +1,13 @@
 from datetime import datetime, timezone
 import json
+import os
+import sys
+
+from ncpa.geographic import Location
 from ncpa.object_factory import ObjectFactory
 from ncpa.json import RoundingEncoder, ExtendedDecoder
 from ncpa.g2s import G2SProfile, G2SParameter, G2SProfileSetFactory
-import os
 
-from ncpa.geographic import Location
 
 NCPA_G2S_DEFAULT_JSON_INDENT = "\t"
 NCPA_G2S_DEFAULT_JSON_FLOAT_FORMAT = '0.5e'
@@ -31,6 +33,21 @@ class G2SProfileEncoder(RoundingEncoder):
     
     def encode_G2SProfile(self,obj):
         return obj.as_dict()
+    
+    def encode_G2SProfileSet(self,obj):
+        obj.finalize()
+        return {
+            'metadata': obj.metadata,
+            'points': obj.profiles,
+        }
+        
+    
+    def encode_G2SProfileLine(self,obj):
+        obj.finalize()
+        return {
+            'metadata': obj.metadata,
+            'points': obj.profiles,
+        }
 
 class G2SProfileDecoder(ExtendedDecoder):
     def decode_datetime(self,obj):
@@ -61,6 +78,7 @@ class G2SProfileDecoder(ExtendedDecoder):
     
     def decode_G2SProfileSet(self,obj):
         profileset = G2SProfileSetFactory.factory.create(obj['metadata']['type'])
+        # profileset = G2SProfileSetFactory.build(obj['metadata']['type'])
         for key, val in obj['metadata'].items():
             profileset.set_metadata(key,val)
         for profile in obj['points']:
@@ -68,7 +86,8 @@ class G2SProfileDecoder(ExtendedDecoder):
         profileset.finalize()
         return profileset
         
-
+    def decode_G2SProfileLine(self,obj):
+        return self.decode_G2SProfileSet(obj)
 
 class G2SFormatter:
     '''Abstract base class for a G2S profile output formatter.
@@ -77,26 +96,14 @@ class G2SFormatter:
     def __init__(self,*args,**kwargs):
         self.time_format_ = NCPA_G2S_DEFAULT_JSON_TIME_FORMAT
     
-    def format(self,profile):
+    def format(self,profile,output,*args,**kwargs):
         raise NotImplementedError
     
     def filename(self,profile):
-        return f'ncpag2s_{profile.metadata["time"].strftime("%Y%m%d%H%M%S")}_{profile.location.latitude:+08.5f}_{profile.location.longitude:+09.5f}.{self.ext}'
-    
+        raise NotImplementedError
+        
     def timestr(self,time):
         return time.astimezone(timezone.utc).strftime(self.time_format_)
-    
-    def to_file(self,profile,path=None,filename=None,overwrite=False,binary=False):
-        if path is None:
-            path = '.'
-        if filename is None:
-            filename = self.filename(profile)
-        mode = 'w' if overwrite else 'a'
-        mode = f'{mode}b' if binary else f'{mode}t'
-        fullfile = os.path.join(path,filename)
-        with open(fullfile,mode) as fid:
-            fid.write(self.format(profile))
-        return fullfile
     
 
 class NCPAPropG2SFormatter(G2SFormatter):
@@ -104,13 +111,26 @@ class NCPAPropG2SFormatter(G2SFormatter):
         self.ext = 'ncpaprop'
         super().__init__(*args,**kwargs)
         
-    def format_profile(self,profile,*args,**kwargs):
+    def filename(self,profile):
+        return f'ncpag2s_{profile.metadata["time"].strftime("%Y%m%d%H%M%S")}_{profile.location.latitude:+08.5f}_{profile.location.longitude:+09.5f}.{self.ext}'
+    
+        
+    def format_profile(self,profile,output=sys.stdout,*args,**kwargs):
         outputs = []
         headerlines = self.make_header_(profile)
         bodylines = self.make_body_(profile)
         outputs += headerlines
         outputs += bodylines
-        return "\n".join(outputs) + "\n"
+        outputstr = "\n".join(outputs) + "\n"
+        if output:
+            try:
+                output.write(outputstr)
+            except AttributeError:
+                if os.path.isdir(output):
+                    output = os.path.join(output,self.filename(profile))
+                with open(output,"wt") as fid:
+                    fid.write(outputstr)
+        return outputstr
     
     def format(self,profile,*args,**kwargs):
         typename = type(profile).__name__
@@ -118,16 +138,12 @@ class NCPAPropG2SFormatter(G2SFormatter):
             return self.format_profile(profile,*args,**kwargs)
         elif typename == 'G2SProfileLine':
             return self.format_line(profile,*args,**kwargs)
-        
-        # outputs = []
-        # headerlines = self.make_header_(profile)
-        # bodylines = self.make_body_(profile)
-        # outputs += headerlines
-        # outputs += bodylines
-        # return "\n".join(outputs) + "\n"
-    
-    def to_file(self,profile,path=None,filename=None,overwrite=False):
-        return super().to_file(profile,path,filename,overwrite,binary=False)
+        elif typename == 'G2SProfileSet':
+            return self.format_set(profile,*args,**kwargs)
+        elif typename == 'list':
+            return [self.format(p,index=n,*args,**kwargs) for n, p in enumerate(profile)]
+    # def to_file(self,profile,path=None,filename=None,overwrite=False):
+    #     return super().to_file(profile,path,filename,overwrite,binary=False)
     
     def make_header_(self,profile):
         lines = []
@@ -157,34 +173,98 @@ class NCPAPropG2SFormatter(G2SFormatter):
             lines.append(f'{z:>7.3f} {t:>16.5e}  {u:>16.5e}  {v:>16.5e}  {r:>16.5e}  {p:>16.5e}')
         return lines
         
-    def format_line(self,line,output_dir,*args,**kwargs):
-        if os.path.exists(output_dir) and not os.path.isdir(output_dir):
-            raise FileExistsError(f'{output_dir} exists but is not a directory!')
-        os.makedirs(output_dir,exist_ok=True)
-        summaryfile = os.path.join(output_dir,'summary.dat')
+    def format_line(self,line,index='',output='.',*args,**kwargs):
+        if len(line) == 1:
+            return self.format_profile(line[0],output=output,*args,**kwargs)
+        # make sure output is a string that represents a directory
+        try:
+            if os.path.exists(output) and not os.path.isdir(output):
+                raise FileExistsError(f'{output} exists but is not a directory!')
+        except TypeError:
+            raise TypeError(f'output must be string, bytes, os.PathLike or integer')
+            
+        os.makedirs(output,exist_ok=True)
+        summaryfile = os.path.join(output,f'summary{index}.dat')
         if os.path.exists(summaryfile):
             raise FileExistsError(f'{summaryfile} already exists!  Please delete before retrying')
-        profiledir = os.path.join(output_dir,'profiles')
+        profiledir = os.path.join(output,f'profiles{index}')
         os.makedirs(profiledir,exist_ok=True)
         with open(summaryfile,'wt') as summary:
             for profile in line.get_profiles():
                 profile_filename = self.filename(profile)
-                self.to_file(profile,path=profiledir,filename=profile_filename,overwrite=True)
-                summary.write(f'{profile.get_metadata("range"):.1f}  profiles/{profile_filename}\n')
+                self.format(profile,output=os.path.join(profiledir,profile_filename))
+                # self.to_file(profile,path=profiledir,filename=profile_filename,overwrite=True)
+                summary.write(f'{profile.get_metadata("range"):.1f}  profiles{index}/{profile_filename}\n')
         
-                
-    
+    def format_set(self,pset,output='.',*args,**kwargs):
+        if len(pset) == 1:
+            return self.format_profile(pset[0],output=output,*args,**kwargs)
+        
+        # make sure output is a string that represents a directory
+        try:
+            if os.path.exists(output) and not os.path.isdir(output):
+                raise FileExistsError(f'{output} exists but is not a directory!')
+        except TypeError:
+            raise TypeError(f'output must be string, bytes, os.PathLike or integer')
+            
+        os.makedirs(output,exist_ok=True)
+        for profile in pset.get_profiles():
+            profile_filename = self.filename(profile)
+            self.format(profile,output=os.path.join(output,profile_filename))
+            # self.to_file(profile,path=output,filename=profile_filename,overwrite=True)
+            
 class JSONG2SFormatter(G2SFormatter):
     def __init__(self,indent=NCPA_G2S_DEFAULT_JSON_INDENT,*args,**kwargs):
         self.indent = indent
         self.ext = 'json'
         super().__init__(*args,**kwargs)
         
-    def format(self,profile):
-        return json.dumps(profile,indent=self.indent,cls=G2SProfileEncoder) + '\n'
+    def format(self,profile,*args,**kwargs):
+        typename = type(profile).__name__
+        if typename == 'G2SProfile':
+            return self.format_generic(profile,*args,**kwargs)
+        elif typename == 'G2SProfileLine':
+            return self.format_generic(profile,*args,**kwargs)
+        elif typename == 'G2SProfileSet':
+            return self.format_generic(profile,*args,**kwargs)
+        elif typename == 'list':
+            return self.format_list(profile,*args,**kwargs)
+        
+    def filename(self,profile):
+        try:
+            return f'ncpag2s_{profile.metadata["time"].strftime("%Y%m%d%H%M%S")}_{profile.location.latitude:+08.5f}_{profile.location.longitude:+09.5f}.{self.ext}'
+        except KeyError:
+            try:
+                return self.filename(profile[0])
+            except TypeError:
+                raise ValueError('Can''t get filename info from supplied object')
+            
+    def format_list(self,profile,output=sys.stdout,*args,**kwargs):
+        outputstr = '[' + ','.join([self.format_generic(p,index=n,output=None,*args,**kwargs) for n, p in enumerate(profile)]) + ']\n'
+        if output:
+            try:
+                output.write(outputstr)
+            except AttributeError:
+                if os.path.isdir(output):
+                    output = os.path.join(output,self.filename(profile))
+                with open(output,"wt") as fid:
+                    fid.write(outputstr)
+        return outputstr
+        
+    def format_generic(self,profile,output=sys.stdout,*args,**kwargs):
+        outputstr = json.dumps(profile,indent=self.indent,cls=G2SProfileEncoder) + '\n'
+        if output:
+            try:
+                output.write(outputstr)
+            except AttributeError:
+                if os.path.isdir(output):
+                    output = os.path.join(output,self.filename(profile))
+                with open(output,"wt") as fid:
+                    fid.write(outputstr)
+        return outputstr
     
-    def to_file(self,profile,path=None,filename=None,overwrite=False):
-        return super().to_file(profile,path,filename,overwrite,binary=False)
+    # def to_file(self,profile,path=None,filename=None,overwrite=False):
+    #     return super().to_file(profile,path,filename,overwrite,binary=False)
         
 
 # builders
@@ -235,7 +315,8 @@ class G2SProfileSetJSONIterator:
         for profile in self.profileset.stream(reader):
             yield(sep + json.dumps(profile,indent=self.indent,cls=G2SProfileEncoder))
             sep = ','
-        yield('],"__extended_json_type__": "G2SProfileSet"}\n')
+        yield(f'],"__extended_json_type__": "{type(self.profileset).__name__}"')
+        yield('}\n')
         
 
 

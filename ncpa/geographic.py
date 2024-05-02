@@ -22,10 +22,14 @@ import math
 
 # convenience class for associating a latitude, longitude, and optional name
 class Location:
-    def __init__(self, lat, lon, name=None):
+    def __init__(self, lat=None, lon=None, name=None, normalize=True):
+        if lat and abs(lat) > 90.0:
+            raise ValueError(f'Lat value {lat} not in [-90,90]')
         self.lat = lat
         self.lon = lon
         self.name = name
+        if normalize:
+            self.normalize()
         
     @property
     def latitude(self):
@@ -34,17 +38,29 @@ class Location:
     @property
     def longitude(self):
         return self.lon
+    
+    def normalize(self):
+        if self.lon:
+            self.lon = NormalizeLongitude(self.lon,degrees=True)
         
     def __str__(self):
         return f'{self.name + ": " if self.name else ""}[ {self.lat:0.5f}, {self.lon:0.5f} ]' 
 
 # Normalizes a longitude to the range [-pi,pi]
-def NormalizeLongitude( lon ):
+def NormalizeLongitude( lon, degrees=False ):
+    if degrees:
+        minlon = -180.0
+        maxlon = 180.0
+        lonadj = 360.0
+    else:
+        minlon = -math.pi
+        maxlon = math.pi
+        lonadj = 2*math.pi
     out = lon
-    while (out > math.pi):
-        out -= 2*math.pi
-    while (out < -math.pi):
-        out += 2*math.pi
+    while (out > maxlon):
+        out -= lonadj
+    while (out < minlon):
+        out += lonadj
     return out
 
 
@@ -60,7 +76,7 @@ def GreatCircle( lat1, lon1, lat2, lon2, N ):
     
     # check for antipodes
     if (lat1 == -lat2 and lon1 == -lon2):
-        raise Exception( "Cannot compute great circle path for antipodes" )
+        raise ValueError( "Cannot compute great circle path for antipodes" )
     if (lat1 == lat2 and lon1 == lon2):
         # special case, starting point and end point are the same, return single point
         path.append( Location( lat1, lon1 ) )

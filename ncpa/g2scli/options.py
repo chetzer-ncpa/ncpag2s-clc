@@ -20,7 +20,7 @@ def add_date_arguments(parser, single=True, requiresingle=False, multiple=True, 
             '--starthour', nargs='?', default=None, required=requiremultiple, type=int, help='Starting hour for regular sequence'
         )
         parser.add_argument(
-            '--every', nargs='?', default=None, required=requiremultiple, type=int, help='Interval in hours for regular sequence'
+            '--every', nargs='?', default=1, required=requiremultiple, type=int, help='Interval in hours for regular sequence'
         )
         parser.add_argument(
             '--enddate', nargs='?', default=None, required=requiremultiple, type=str, help='Ending date for regular sequence, in any ISO8601 format'
@@ -31,10 +31,10 @@ def add_date_arguments(parser, single=True, requiresingle=False, multiple=True, 
 
 def add_point_location_arguments(parser, required=True ):
     parser.add_argument(
-        '--latitude', nargs=1, default=[], required=required, type=float, help='Latitude for point'
+        '--latitude', nargs='?', default=[], required=required, type=float, help='Latitude for point'
     )
     parser.add_argument(
-        '--longitude', nargs=1, default=[], required=required, type=float, help='Longitude for point'
+        '--longitude', nargs='?', default=[], required=required, type=float, help='Longitude for point'
     )
     return parser
         

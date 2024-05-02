@@ -12,8 +12,9 @@ class Dictable:
         for key in d.keys():
             yield (key, d[key])
 
-class HasMetadata:
+class HasMetadata(Dictable):
     def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
         self.metadata = {}
         
     def clear_metadata(self):

@@ -1,10 +1,11 @@
 import re
 from datetime import datetime, timezone
 import json
+import os
 import logging
 
 from ncpa.geographic import Location, GeographicDistance
-from ncpa.object_factory import ObjectFactory
+import ncpa.object_factory as object_factory
 from ncpa.mixins import Dictable, HasMetadata
 
 # from .formatters import G2SFormatterFactory, G2SProfileSetJSONIterator
@@ -49,15 +50,15 @@ class G2SParameter(Dictable):
             'values': self.values,
         }
         
-class G2SProfile(Dictable,HasMetadata):
+class G2SProfile(HasMetadata):
     time_format_string = '%Y-%m-%dT%H:%M:%SZ'
     
     def __init__(self,sourcefile=None,nz=0,dz=None,latitude=None,longitude=None,
                  location=None, time=None, tag=None, parameters=[], from_json=None):
-        Dictable.__init__(self)
-        HasMetadata.__init__(self)
-        self.set_metadata('sourcefile',sourcefile)
-        self.set_metadata('tag',tag)
+        super().__init__(self)
+        self.set_metadata('sourcefile',os.path.split(sourcefile)[-1])
+        if tag is not None:
+            self.set_metadata('tag',tag)
         self.set_metadata('nz',nz)
         self.set_metadata('time',time)
         self.set_metadata('location',location if location else Location(latitude,longitude))
@@ -131,10 +132,9 @@ class G2SProfile(Dictable,HasMetadata):
     
 
     
-class G2SProfileSet(Dictable,HasMetadata):
+class G2SProfileSet(HasMetadata):
     def __init__(self,set_type='points',profiles=[],locations=[],*args,**kwargs):
-        Dictable.__init__(self)
-        HasMetadata.__init__(self)
+        super().__init__(self)
         self.set_metadata('type', set_type)
         self.set_metadata('points',0)
         self.profiles = profiles
@@ -201,6 +201,7 @@ class G2SProfileSet(Dictable,HasMetadata):
 class G2SProfileLine(G2SProfileSet):
     def __init__(self,reference_location=None,*args,**kwargs):
         super().__init__(set_type='line',*args,**kwargs)
+        self.clear()
         self.reference_location = reference_location
         
     def clear(self):
@@ -299,47 +300,62 @@ class G2SProfileGrid(G2SProfileSet):
         
 
 # factories
-class G2SProfileSetBuilder:
-    def __init__(self):
-        self._instance = None
-        
-    def __call__(self):
-        if not self._instance:
-            self._instance = G2SProfileSet()
-        return self._instance
+# class G2SProfileSetBuilder:
+#     def __init__(self):
+#         self._instance = None
+#
+#     def __call__(self):
+#         return G2SProfileSet()
+#         # if not self._instance:
+#         #     # self._instance = None
+#         #     self._instance = G2SProfileSet()
+#         # return self._instance
+#
+# class G2SProfileLineBuilder:
+#     def __init__(self):
+#         self._instance = None
+#
+#     def __call__(self):
+#         return G2SProfileLine()
+#         # if not self._instance:
+#         #     # self._instance = None
+#         #     self._instance = G2SProfileLine()
+#         # return self._instance
+#
+# class G2SProfileGridBuilder:
+#     def __init__(self):
+#         self._instance = None
+#
+#     def __call__(self):
+#         return G2SProfileGrid()
+#         # if not self._instance:
+#         #     # self._instance = None
+#         #     self._instance = G2SProfileGrid()
+#         # return self._instance
 
-class G2SProfileLineBuilder:
-    def __init__(self):
-        self._instance = None
-        
-    def __call__(self):
-        if not self._instance:
-            self._instance = G2SProfileLine()
-        return self._instance
-    
-class G2SProfileGridBuilder:
-    def __init__(self):
-        self._instance = None
-        
-    def __call__(self):
-        if not self._instance:
-            self._instance = G2SProfileGrid()
-        return self._instance
+def _create_g2s_profile_set(**kwargs):
+    return G2SProfileSet(**kwargs)
+def _create_g2s_profile_line(**kwargs):
+    return G2SProfileLine(**kwargs)
+def _create_g2s_profile_grid(**kwargs):
+    return G2SProfileGrid(**kwargs)
     
 # invoke with G2SProfileSetFactory.factory.create('ncpaprop')
 class G2SProfileSetFactory:
-    factory = ObjectFactory()
-    factory.register_builder('points',G2SProfileSetBuilder())
-    factory.register_builder('line',G2SProfileLineBuilder())
-    factory.register_builder('grid',G2SProfileGridBuilder())
+    factory = object_factory.ObjectFactory()
+    factory.register_builder('points',_create_g2s_profile_set)
+    factory.register_builder('line',_create_g2s_profile_line)
+    factory.register_builder('grid',_create_g2s_profile_grid)
 
 
 
 class G2SReader:
-    def __init__(self, nrlg2s, sigfigs=6):
+    def __init__(self, nrlg2s, sigfigs=6, dz=G2S_DEFAULT_DZ, zmax=G2S_DEFAULT_ZMAX):
         self.nrlg2s_ = nrlg2s
         self.loaded_ = None
         self.sigfigs = sigfigs
+        self.dz = dz
+        self.zmax = zmax
         
     def load(self,file):
         if self.nrlg2s_.serverup:
@@ -360,25 +376,13 @@ class G2SReader:
         profiles = G2SProfileSetFactory.factory.create(set_type)
         for loc in locations:
             profiles.append(self.read_profile(lat=loc.latitude,lon=loc.longitude,*args,**kwargs))
-            # (z0, z, t, u, v, r, p) = self.read_from_nrlg2s(loc.lat,loc.lon,dz,nz)
-            # profile = G2SProfile(
-            #     sourcefile=self.loaded_.filename,
-            #     nz=nz,
-            #     dz=dz,
-            #     location=loc,
-            #     time=self.loaded_.time,
-            # )
-            # profile.add_parameter(G2SParameter(code='Z0',description='Ground Height',units='km',values=[z0]))
-            # profile.add_parameter(G2SParameter(code='Z',description='Height',units='km',values=z))
-            # profile.add_parameter(G2SParameter(code='T',description='Temperature',units='K',values=t))
-            # profile.add_parameter(G2SParameter(code='U',description='Zonal Winds',units='m/s',values=u))
-            # profile.add_parameter(G2SParameter(code='V',description='Meridional Winds',units='m/s',values=v))
-            # profile.add_parameter(G2SParameter(code='R',description='Density',units='g/cm3',values=r))
-            # profile.add_parameter(G2SParameter(code='P',description='Pressure',units='mbar',values=p))
-            # profiles.append(profile)
         return profiles
     
-    def read_profile(self,location=None,lat=None,lon=None,dz=G2S_DEFAULT_DZ,zmax=G2S_DEFAULT_ZMAX,*args,**kwargs):
+    def read_profile(self,location=None,lat=None,lon=None,dz=None,zmax=None,*args,**kwargs):
+        if dz is None:
+            dz = self.dz
+        if zmax is None:
+            zmax = self.zmax
         if location is None:
             loc = Location(lat,lon)
         else:
