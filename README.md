@@ -11,7 +11,7 @@ Subcommands can be listed by running `ncpag2s.py help`, with more detailed help 
 Options and flags will vary between subcommands but will be consistent when the meaning is roughly the same.  Generally speaking, they will fall into the following categories:
 
 ### Time
-The time(s) at which data is to be returned are indicated using `--date` and `--hour` flags.  Dates can be parsed from any ISO8601-compliant format; examples will be formatted as YYYY-MM-DD.  Times are treated as integer hours, UTC.  When supported, multiple dates and/or hours can be provided after the flags, in which case every combination of date and hour will be retrieved.  Multi-time requests can be slow to complete, as each date/time requires a separate request be sent to the server.
+The time(s) at which data is to be returned are indicated using `--date` and `--hour` flags for single-time requests, or `--startdate`, `--starthour`, `--enddate`, `--endhour`, and `--every` flags for time ranges.  Dates can be parsed from any ISO8601-compliant format; examples will be formatted as YYYY-MM-DD.  Times are treated as integer hours, UTC.  Be aware that multi-time requests are slower to complete than single-time requests, as each date/time requires a separate request be sent to the server.
 
 ### Location
 Locations are specified as latitude and longitude in decimal degrees.  Different subcommands will require different sets of options, see the help texts for details.
@@ -122,3 +122,27 @@ In these cases, additional fields will often be added to the metadata block for 
 This nesting behavior is extended as needed.  For example if lines are requested for multiple times, the individual lines will be presented as a comma-separated series of the above structure, enclosed within square brackets.
 
 Commands to convert between supported data formats are under development.
+
+
+## Example Commands
+`ncpag2s.py point --date 2023-07-04 --hour 12 --lat 37.867 --lon -122.259`
+
+Retrieve the profile at \[37.867,-122.259\] (Rasputin Records, Berkeley, California) at 1200 UTC on 4 July 2023 in JSON format and print to the screen.
+
+`ncpag2s.py point --date 2023-07-04 --hour 12 --lat 37.867 --lon -122.259 --outputformat ncpaprop --output rasputin.dat`
+
+Retrieve the same profile but in **ncpaprop** format and write to the file `rasputin.dat` instead of to the screen.
+
+`ncpag2s.py line --date 2023-08-10 --hour 0 --startlat 34.39 --startlon -89.51 --endlat 35.23 --endlon -106.66 --points 21 --output ms_to_abq.dat`
+
+Retrieve a line of 21 profiles evenly spaced between Oxford, MS and Albuquerque, NM at 00 UTC on 10 August 2023 in JSON format and write to the file `ms_to_abq.dat`.
+
+`ncpag2s.py line --date 2023-08-10 --hour 0 --startlat 34.39 --startlon -89.51 --endlat 35.23 --endlon -106.66 --points 21 --outputformat ncpaprop --output /tmp/ms_to_abq`
+
+Retrieve the same line of 21 profiles but write them as a **ncpaprop** `--atmos2d` summary file/profile directory structure to the directory /tmp/ms_to_abq.
+
+`ncpag2s.py line --startlat 19.59 --startlon -155.89 --endlat 29.59 --endlon -155.89 --points 11 --startdate 2023-01-24 --starthour 0 --enddate 2023-01-25 --endhour 0 --every 4`
+
+Retrieve a line of 11 points going 10 degrees due north from the I59US infrasound station, every 4 hours for 24 hours total starting 00 UT on 24 January 2023, output in JSON format to the screen.
+
+
