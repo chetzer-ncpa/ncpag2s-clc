@@ -23,13 +23,20 @@ Currently two output formats are supported.  **ncpaprop** format returns profile
 
 Absent specific instructions, the client will default to the following behavior:
 
-- **For JSON requests**:
+- **For JSON requests:**
+  
   **`--output` flag absent:** Output will print to the screen.
+  
   **`--output <filename>`:** Output will be written to the file, truncating any existing contents.
+  
   **`--output <directoryname>`:** Output will be written to a file in the specified directory, with the filename format dependent on the type of request.
-- **For NCPAprop requests**
+  
+- **For NCPAprop requests:**
+  
   **`--output` flag absent:** If a single profile is returned, output will print to the screen.  If multiple profiles are returned, output will be written to descriptively-named files in the current directory.
+  
   **`--output <filename>`:** If a single profile is returned, output will be written to the file, truncating any existing contents.  If multiple profiles are returned, an error will be reported.
+  
   **`--output <directoryname>`:** Output will be written to files in the specified directory, with the filename format dependent on the type of request.  In the case of `line` or `grid` requests, a summary file will be created.  The individual profiles will be placed in a subdirectory of the specified directory, which will be created if absent.
 
 
@@ -38,7 +45,80 @@ The command-line client supports the following types of requests, all of which c
 
 - **`point`**: Returns the atmospheric profiles at the single specified location.
 - **`line`**: An evenly-spaced line of profiles along the great-circle path between two points.
-- **`grid`**: An evenly-spaced grid of profiles between two corner points, assuming Mercator projection.
-- **`fan`**: A set of great-circle paths originating at a single point and fanning out over a range of azimuths.
+- **`grid`**: (not yet developed) An evenly-spaced grid of profiles between two corner points, assuming Mercator projection.
+- **`fan`**: (not yet developed) A set of great-circle paths originating at a single point and fanning out over a range of azimuths.
 - **`raw`**: The raw G2S coefficient file for a single time.  Note that proprietary software is required to read this file format.  If you don't know what that software is, then you don't have access to it and the raw file will not be of use.
 
+
+## JSON Format
+The default JSON format is structured as follows:
+
+### Individual Profiles
+An example of an individual G2S profile in JSON format is shown here:
+
+```
+{
+    "metadata": {
+        "sourcefile": "G2SGCSB2023012404.bin",
+        "nz": 1501,
+        "time": {
+            "datetime": "2023-01-24T04:00:00",
+            "format": "%Y-%m-%dT%H:%M:%S",
+            "__extended_json_type__": "datetime"
+        },
+        "location": {
+            "latitude": 19.59,
+            "longitude": -155.89,
+            "__extended_json_type__": "Location"
+        },
+        "parameters": 7
+    },
+    "data": [
+            {
+                "parameter": "Z0",
+                "description": "Ground Height",
+                "units": "km",
+                "n": 1,
+                "values": [
+                    1.052
+                ]
+            },
+            {
+                "parameter": "Z",
+                "description": "Height",
+                "units": "km",
+                "n": 1501,
+                "values": [
+                    0.0,
+                    0.1,
+...etc.
+```
+
+JSON files containing multiple profiles will generally be grouped into profile sets, which may be `line`s, `grid`s, or other logical groupings.  In these cases there will be a containing JSON block with its own metadata structure, which will vary by the type of grouping.  An example of a line of profiles along a great-circle path between two points might be:
+
+```
+{
+    "metadata": {
+        "type": "line",
+        "points": 21,
+        "reference_location": {
+            "latitude": 19.59,
+            "longitude": -155.89,
+            "__extended_json_type__": "Location"
+        },
+    },
+    "points": [
+        {
+        <individual profile structure>
+        },
+        {
+        <individual profile structure>
+        },
+...etc
+```
+
+In these cases, additional fields will often be added to the metadata block for each constituent profile as appropriate; for example in the case of the line above, each profile's metadata block will also have a "range" entry with the distance to the reference location in km.  
+
+This nesting behavior is extended as needed.  For example if lines are requested for multiple times, the individual lines will be presented as a comma-separated series of the above structure, enclosed within square brackets.
+
+Commands to convert between supported data formats are under development.
