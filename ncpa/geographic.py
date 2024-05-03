@@ -42,9 +42,22 @@ class Location:
     def normalize(self):
         if self.lon:
             self.lon = NormalizeLongitude(self.lon,degrees=True)
+            
+    def distance_to(self,loc2):
+        return GeographicDistance(self.latitude,self.longitude,loc2.latitude,loc2.longitude)
+    
+    def path_to(self,loc2,npoints):
+        return GreatCircle(self.latitude,self.longitude,loc2.latitude,loc2.longitude,npoints)
+    
+    def point_at(self,azimuth,distance):
+        (lat2,lon2) = DestinationPoint(self.latitude, self.longitude, azimuth, distance)
+        return Location(lat2,lon2)
         
     def __str__(self):
         return f'{self.name + ": " if self.name else ""}[ {self.lat:0.5f}, {self.lon:0.5f} ]' 
+
+def EarthRadius():
+    return 6371
 
 # Normalizes a longitude to the range [-pi,pi]
 def NormalizeLongitude( lon, degrees=False ):
@@ -63,6 +76,19 @@ def NormalizeLongitude( lon, degrees=False ):
         out += lonadj
     return out
 
+# from http://www.movable-type.co.uk/scripts/latlong.html
+def DestinationPoint( lat1, lon1, azimuth, distance ):
+    R = EarthRadius()
+    delta = distance/R
+    phi1 = math.radians(lat1)
+    lambda1 = math.radians(lon1)
+    theta = math.radians(azimuth)
+    
+    phi2 = math.asin( math.sin(phi1)*math.cos(delta) 
+                      + math.cos(phi1)*math.sin(delta)*math.cos(theta))
+    lambda2 = lambda1 + math.atan2(math.sin(theta)*math.sin(delta)*math.cos(phi1),
+                                   math.cos(delta) - math.sin(phi1)*math.sin(phi2))
+    return (math.degrees(phi2), math.degrees(NormalizeLongitude(lambda2)))
 
 # Computes N points along the great circle path between (lat1,lon1) and (lat2,lon2).
 # The code comes from the technique given at https://en.wikipedia.org/wiki/Great-circle_navigation
@@ -72,7 +98,7 @@ def GreatCircle( lat1, lon1, lat2, lon2, N ):
     path = []
     
     # radius of the earth
-    Re = 6371
+    Re = EarthRadius()
     
     # check for antipodes
     if (lat1 == -lat2 and lon1 == -lon2):
