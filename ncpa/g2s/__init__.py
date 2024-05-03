@@ -56,9 +56,8 @@ class G2SProfile(HasMetadata):
     def __init__(self,sourcefile=None,nz=0,dz=None,latitude=None,longitude=None,
                  location=None, time=None, tag=None, parameters=[], from_json=None):
         super().__init__(self)
-        self.set_metadata('sourcefile',os.path.split(sourcefile)[-1])
-        if tag is not None:
-            self.set_metadata('tag',tag)
+        self.set_metadata('sourcefile',os.path.split(sourcefile)[-1] if sourcefile else None)
+        self.set_metadata('tag',tag)
         self.set_metadata('nz',nz)
         self.set_metadata('time',time)
         self.set_metadata('location',location if location else Location(latitude,longitude))
