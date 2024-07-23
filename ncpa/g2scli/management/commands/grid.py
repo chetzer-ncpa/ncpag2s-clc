@@ -19,8 +19,10 @@ class Command(BaseCommand):
     
     The user specifies a date and time, corner points points, and the number of grid points
     to return.  If the default JSON format is requested, the results are returned in text 
-    format.  If ncpaprop format is requested, summary files and profile files
-    are created in the output directory, suitable for use in NCPAprop or infraga-rngdep.
+    format.  If infraga format is requested, summary files and profile files
+    are created in the output directory, suitable for use in infraga-rngdep.
+    In addition, a 'flags.txt' file will be created in the execution directory with
+    the appropriate flags to feed the grid into InfraGA.
     '''
     
     #help = "Extract a line of points from the G2S database."
