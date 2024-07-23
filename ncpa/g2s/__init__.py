@@ -50,6 +50,13 @@ class G2SParameter(Dictable):
             'values': self.values,
         }
         
+    def scale(self,factor):
+        self.values = [v*factor for v in self.values]
+    
+    def offset(self,factor):
+        self.values = [v+factor for v in self.values]
+
+        
 class G2SProfile(HasMetadata):
     time_format_string = '%Y-%m-%dT%H:%M:%SZ'
     
@@ -119,9 +126,6 @@ class G2SProfile(HasMetadata):
     def json(self,indent=None):
         return json.dumps(self.as_dict(),indent=indent)
         
-    # def format(self,format_code):
-    #     return G2SFormatterFactory.factory.create(format_code).format()
-        
     def timestr(self,t):
         return t.strftime(self.time_format_string)
     
@@ -129,6 +133,9 @@ class G2SProfile(HasMetadata):
     def location(self):
         return self.get_metadata('location')
     
+    @property
+    def time(self):
+        return self.get_metadata('time')
 
     
 class G2SProfileSet(HasMetadata):
@@ -267,7 +274,7 @@ class G2SProfileGrid(G2SProfileSet):
     def finalize(self):
         self.update_metadata()
         self.assign_grid_indices()
-        self.sort_by_xy()
+        # self.sort_by_xy()
         
     def as_dict(self,*args,**kwargs):
         self.finalize()
@@ -280,24 +287,24 @@ class G2SProfileGrid(G2SProfileSet):
         for p in self.profiles:
             lats.add(p.location.latitude)
             lons.add(p.location.longitude)
-        return lats, lons
+        return list(sorted(lats)), list(sorted(lons))
     
     def assign_grid_indices(self):
         lats, lons = self.get_unique_coordinates()
-        lat_dict = {i: lat for (i,lat) in enumerate(sorted(lats))}
-        lon_dict = {i: lon for (i,lon) in enumerate(sorted(lons))}
+        lat_dict = {lat: i for (i,lat) in enumerate(sorted(lats))}
+        lon_dict = {lon: i for (i,lon) in enumerate(sorted(lons))}
         for p in self.profiles:
-            p.set_metadata('x_index',lon_dict[p.location.latitude])
-            p.set_metadata('y_index',lat_dict[p.location.longitude])
+            p.set_metadata('x_index',lon_dict[p.location.longitude])
+            p.set_metadata('y_index',lat_dict[p.location.latitude])
+        self.profiles.sort(key=lambda p: (p.metadata['x_index'],p.metadata['y_index']))
+    
+    # def sort_by_xy(self):
+    #     lats, lons = self.get_unique_coordinates()
+    #     latdict = {k: i for (i,k) in enumerate(sorted(lats))}
+    #     londict = {k: i for (i,k) in enumerate(sorted(lons))}
+    #     self.profiles.sort(key=lambda p: (londict[p.location.longitude],latdict[p.location.latitude]))
         
     
-    def sort_by_xy(self):
-        lats, lons = self.get_unique_coordinates()
-        latdict = {k: i for (i,k) in enumerate(sorted(lats))}
-        londict = {k: i for (i,k) in enumerate(sorted(lons))}
-        self.profiles.sort(key=lambda p: (londict[p.location.longitude],latdict[p.location.latitude]))
-        
-
 # factories
 # class G2SProfileSetBuilder:
 #     def __init__(self):

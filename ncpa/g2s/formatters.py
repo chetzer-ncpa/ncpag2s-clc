@@ -48,6 +48,13 @@ class G2SProfileEncoder(RoundingEncoder):
             'metadata': obj.metadata,
             'points': obj.profiles,
         }
+        
+    def encode_G2SProfileGrid(self,obj):
+        obj.finalize()
+        return {
+            'metadata': obj.metadata,
+            'points': obj.profiles,
+        }
 
 class G2SProfileDecoder(ExtendedDecoder):
     def decode_datetime(self,obj):
@@ -87,6 +94,9 @@ class G2SProfileDecoder(ExtendedDecoder):
         return profileset
         
     def decode_G2SProfileLine(self,obj):
+        return self.decode_G2SProfileSet(obj)
+    
+    def decode_G2SProfileGrid(self,obj):
         return self.decode_G2SProfileSet(obj)
 
 class G2SFormatter:
@@ -140,6 +150,8 @@ class NCPAPropG2SFormatter(G2SFormatter):
             return self.format_line(profile,*args,**kwargs)
         elif typename == 'G2SProfileSet':
             return self.format_set(profile,*args,**kwargs)
+        elif typename == 'G2SProfileGrid':
+            return self.format_grid(profile,*args,**kwargs)
         elif typename == 'list':
             return [self.format(p,index=n,*args,**kwargs) for n, p in enumerate(profile)]
     # def to_file(self,profile,path=None,filename=None,overwrite=False):
@@ -153,7 +165,7 @@ class NCPAPropG2SFormatter(G2SFormatter):
             lines.append(f'# Model Calculated {self.timestr(profile.get_metadata("calculated_time"))}')
         lines.append(f'# Model Time {self.timestr(profile.get_metadata("time"))}')
         lines.append(f'# Location = [ {profile.location.lat:.4f}, {profile.location.lon:.4f} ]')
-        lines.append(f'# Fields = [ Z(km), T(K), U(m/s), V(m/s), R(g/cm3), P(mbar) ]')
+        lines.append(f'# Fields = [ Z({profile.parameters["Z"].units}), T({profile.parameters["T"].units}), U({profile.parameters["U"].units}), V({profile.parameters["V"].units}), R({profile.parameters["R"].units}), P({profile.parameters["P"].units}) ]')
         lines.append(f'# Ground Height = {profile.parameters["Z0"].values[0]} {profile.parameters["Z0"].units}')
         lines.append(f'# The following lines are formatted input for ncpaprop')
         lines.append(f'#% 0, Z0, {profile.parameters["Z0"].units}, {profile.parameters["Z0"].values[0]}')
@@ -172,6 +184,44 @@ class NCPAPropG2SFormatter(G2SFormatter):
         for (z,t,u,v,r,p) in zip(*params):
             lines.append(f'{z:>7.3f} {t:>16.5e}  {u:>16.5e}  {v:>16.5e}  {r:>16.5e}  {p:>16.5e}')
         return lines
+        
+    def format_grid(self,grid,index='',output='.',*args,**kwargs):
+        if len(grid) == 1:
+            return self.format_profile(grid[0],output=output,*args,**kwargs)
+        # make sure output is a string that represents a directory
+        try:
+            if os.path.exists(output) and not os.path.isdir(output):
+                raise FileExistsError(f'{output} exists but is not a directory!')
+        except TypeError:
+            raise TypeError(f'output must be string, bytes, os.PathLike or integer')
+        os.makedirs(output,exist_ok=True)
+        try:
+            latsfile = kwargs['latfile']
+        except KeyError:
+            latsfile = os.path.join(output,'lats.dat')
+        try:
+            lonsfile = kwargs['lonfile']
+        except KeyError:
+            lonsfile = os.path.join(output,'lons.dat')
+        
+        grid.finalize()
+        lats, lons = grid.get_unique_coordinates()
+        timestr = grid[0].time.strftime('%y%m%d%H')
+        filebase = f'grid{timestr}{lats[0]:+08.5f}{lons[0]:+09.5f}{lats[-1]:+08.5f}{lons[-1]:+09.5f}_'
+        count = 0
+        for profile in grid.get_profiles():
+            profile_filename = f'{filebase}{count}.met'
+            self.format(profile,output=os.path.join(output,profile_filename))
+            count += 1
+        with open(latsfile,'wt') as fid:
+            for lat in lats:
+                fid.write(f'{float(lat)}\n')
+        with open(lonsfile,'wt') as fid:
+            for lon in lons:
+                fid.write(f'{float(lon)}\n')
+        with open('flags.txt','wt') as fid:
+            fid.write(f'--atmo-prefix {os.path.join(output,filebase)} --grid-lats {latsfile} --grid-lons {lonsfile}\n')
+        
         
     def format_line(self,line,index='',output='.',*args,**kwargs):
         if len(line) == 1:
@@ -212,7 +262,16 @@ class NCPAPropG2SFormatter(G2SFormatter):
             profile_filename = self.filename(profile)
             self.format(profile,output=os.path.join(output,profile_filename))
             # self.to_file(profile,path=output,filename=profile_filename,overwrite=True)
+
+class InfraGAFormatter(NCPAPropG2SFormatter):
+    def format_profile(self,profile,*args,**kwargs):
+        # check density units
+        if profile.parameters['R'].units == 'kg/m3':
+            profile.parameters['R'].scale(0.001)
+            profile.parameters['R'].units = 'g/cm3'
+        super().format_profile(profile,*args,**kwargs)
             
+
 class JSONG2SFormatter(G2SFormatter):
     def __init__(self,indent=NCPA_G2S_DEFAULT_JSON_INDENT,*args,**kwargs):
         self.indent = indent
@@ -226,6 +285,8 @@ class JSONG2SFormatter(G2SFormatter):
         elif typename == 'G2SProfileLine':
             return self.format_generic(profile,*args,**kwargs)
         elif typename == 'G2SProfileSet':
+            return self.format_generic(profile,*args,**kwargs)
+        elif typename == 'G2SProfileGrid':
             return self.format_generic(profile,*args,**kwargs)
         elif typename == 'list':
             return self.format_list(profile,*args,**kwargs)
@@ -286,11 +347,21 @@ class JSONG2SFormatterBuilder:
             self._instance = JSONG2SFormatter()
         return self._instance
 
+class InfraGAFormatterBuilder:
+    def __init__(self):
+        self._instance = None
+        
+    def __call__(self):
+        if not self._instance:
+            self._instance = InfraGAFormatter()
+        return self._instance
+
 # invoke with G2SFormatterFactory.factory.create('ncpaprop')
 class G2SFormatterFactory:
     factory = ObjectFactory()
     factory.register_builder('ncpaprop',NCPAPropG2SFormatterBuilder())
     factory.register_builder('json',JSONG2SFormatterBuilder())
+    factory.register_builder('infraga',InfraGAFormatterBuilder())
     
     
     

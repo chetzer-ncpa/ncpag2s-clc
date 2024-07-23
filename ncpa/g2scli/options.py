@@ -56,6 +56,27 @@ def add_line_location_arguments(parser, required=True ):
     )
     return parser
 
+def add_grid_location_arguments(parser, required=True ):
+    parser.add_argument(
+        '--startlatitude', nargs='?', default=None, required=required, type=float, help='Latitude of lower-left point'
+    )
+    parser.add_argument(
+        '--startlongitude', nargs='?', default=None, required=required, type=float, help='Longitude of lower-left point'
+    )
+    parser.add_argument(
+        '--endlatitude', nargs='?', default=None, required=required, type=float, help='Latitude of upper-right point'
+    )
+    parser.add_argument(
+        '--endlongitude', nargs='?', default=None, required=required, type=float, help='Longitude of upper-right point'
+    )
+    parser.add_argument(
+        '--latpoints', nargs='?', default=None, required=required, type=int, help='Number of latitude points'
+    )
+    parser.add_argument(
+        '--lonpoints', nargs='?', default=None, required=required, type=int, help='Number of longitude points'
+    )
+    return parser
+
 def parse_datetimes(options):
     # First, check for specified dates and hours, these take precedence
     dates = [date.fromisoformat(ds) for ds in options.get('date',[])]
