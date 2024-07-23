@@ -30,9 +30,9 @@ class Command(BaseCommand):
         --endlat 40.0 --endlon -96.0 --latpoints 13 --lonpoints 15
         ''',
         '''
-        ncpag2s.py line --date 2023-08-10 --hour 0 --startlat 34.39 --startlon -89.51 
-        --endlat 35.23 --endlon -106.66 --points 21 --outputformat ncpaprop 
-        --output /tmp/ms_to_abq --verbosity debug
+        ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.39 --startlon -89.51 
+        --endlat 35.23 --endlon -106.66 --points 21 --outputformat infraga 
+        --output /tmp/testgrid
         '''
         
     ]
@@ -41,7 +41,7 @@ class Command(BaseCommand):
         add_date_arguments(parser,single=True,multiple=False)
         add_grid_location_arguments(parser,required=True)
         parser.add_argument(
-            "--outputformat", nargs='?', choices=['ncpaprop','json','infraga'], default='json', help='Output format'
+            "--outputformat", nargs='?', choices=['json','infraga'], default='json', help='Output format'
         )
         
         
