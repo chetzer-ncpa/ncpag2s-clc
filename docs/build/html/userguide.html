@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>User Guide &#8212; ncpag2s-clc 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=8d563738"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Formats" href="formats.html" />
+    <link rel="prev" title="Overview" href="overview.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="user-guide">
+<span id="userguide"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">¶</a></h1>
+<p>This section will go into greater detail about the use of the various available subcommands and their flags.  Each subcommand has help text that can be accessed with <code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">help</span> <span class="pre">[subcommand]</span></code>.</p>
+<section id="time-conventions">
+<h2>Time Conventions<a class="headerlink" href="#time-conventions" title="Link to this heading">¶</a></h2>
+<p>G2S data is generally available hourly after 1 January 2011, and every 6 hours between 1 January 2003 and 31 December 2010.  Thus, there is no reason to specify times to any precision greater than 1 hour.  In all cases, subcommands require dates and times to be specified, either singly or as a range.  In each case, dates and hours are specified separately.  Dates can be in any ISO8601-compliant format (e.g. 2023-08-01) while hours are specified as integers from 0-23.  All times are in UTC.</p>
+</section>
+<section id="output-formats">
+<h2>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading">¶</a></h2>
+<p>In all cases, <code class="docutils literal notranslate"><span class="pre">json</span></code> and <code class="docutils literal notranslate"><span class="pre">ncpaprop</span></code> outputs are available.  Others may be available for specific subcommands.  For details on these formats, see Data Formats.</p>
+</section>
+<section id="checktime-confirm-data-availability">
+<h2><code class="docutils literal notranslate"><span class="pre">checktime</span></code>: Confirm data availability<a class="headerlink" href="#checktime-confirm-data-availability" title="Link to this heading">¶</a></h2>
+<p>This subcommand queries the G2S database to verify that data is available for the date and time requested.  The command will return either “Time [datetime] is available” or “Time [datetime] is not available”.</p>
+<p>Usage is:</p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">checktime</span> <span class="pre">--date</span> <span class="pre">[date]</span> <span class="pre">--hour</span> <span class="pre">[hour]</span></code></p>
+<p>where <code class="docutils literal notranslate"><span class="pre">[flags]</span></code> is one or more of the following, with flags that require each other grouped together:</p>
+<p><strong>Required:</strong>
+<code class="docutils literal notranslate"><span class="pre">--date</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--hour</span> <span class="pre">[hour]</span></code></p>
+<blockquote>
+<div><p>The UTC date and hour for the grid file.</p>
+</div></blockquote>
+<dl>
+<dt><strong>Example Command</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">checktime</span> <span class="pre">--date</span> <span class="pre">2023-08-01</span> <span class="pre">--hour</span> <span class="pre">8</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">checktime</span> <span class="pre">--date</span> <span class="pre">2008-08-01</span> <span class="pre">--hour</span> <span class="pre">8</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="point-a-single-geographic-point">
+<h2><code class="docutils literal notranslate"><span class="pre">point</span></code>: A single geographic point<a class="headerlink" href="#point-a-single-geographic-point" title="Link to this heading">¶</a></h2>
+<p>This subcommand will extract profile(s) at one or more times at a single geographic point (i.e. one latitude/longitude pair).  Usage is:</p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">point</span> <span class="pre">[flags]</span></code></p>
+<p>where <code class="docutils literal notranslate"><span class="pre">[flags]</span></code> is one or more of the following, with flags that require each other grouped together:</p>
+<p><strong>Required:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--latitude</span> <span class="pre">[latitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--longitude</span> <span class="pre">[longitude]</span></code></p>
+<blockquote>
+<div><p>The latitude/longitude coordinates at which to extract the profile.  Coordinates are expected to be in the ranges [-90,90] and [-180,180], respectively.</p>
+</div></blockquote>
+<p><strong>One of the following groups is required:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--date</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--hour</span> <span class="pre">[hour]</span></code></p>
+<blockquote>
+<div><p>The UTC date and hour  at which to extract the profile.</p>
+</div></blockquote>
+<p><strong>OR</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--startdate</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--starthour</span> <span class="pre">[hour]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--enddate</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endhour</span> <span class="pre">[hour]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--every</span> <span class="pre">[interval]</span></code></p>
+<blockquote>
+<div><p>The starting and ending dates and times for a range of multiple times, extracted at the requested interval (in hours).</p>
+</div></blockquote>
+<p><strong>Optional:</strong></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--outputformat</span> <span class="pre">[json|ncpaprop]</span></code></dt><dd><p>Specifies the format in which the profile(s) are output.  The default is <code class="docutils literal notranslate"><span class="pre">json</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--output</span> <span class="pre">[destination]</span></code></dt><dd><p>The destination for the output data.  The default is to print to the screen.  For <code class="docutils literal notranslate"><span class="pre">json</span></code> output this should be a file.  For <code class="docutils literal notranslate"><span class="pre">ncpaprop</span></code> output this should be a file for single-time requests, or a directory for multi-time requests.</p>
+</dd>
+<dt><strong>Example Commands</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">point</span> <span class="pre">--date</span> <span class="pre">2023-07-04</span> <span class="pre">--hour</span> <span class="pre">12</span> <span class="pre">--lat</span> <span class="pre">37.867</span> <span class="pre">--lon</span> <span class="pre">-122.259</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">point</span> <span class="pre">--date</span> <span class="pre">2023-07-04</span> <span class="pre">--hour</span> <span class="pre">12</span> <span class="pre">--lat</span> <span class="pre">37.867</span> <span class="pre">--lon</span> <span class="pre">-122.259</span> <span class="pre">--outputformat</span> <span class="pre">ncpaprop</span> <span class="pre">--output</span> <span class="pre">rasputin.dat</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="line-an-evenly-spaced-line-of-points">
+<h2><code class="docutils literal notranslate"><span class="pre">line</span></code>: An evenly-spaced line of points<a class="headerlink" href="#line-an-evenly-spaced-line-of-points" title="Link to this heading">¶</a></h2>
+<p>This subcommand will extract an evenly-spaced great-circle line of profiles between two latitude/longitude pairs at one or more times.  Usage is:</p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">line</span> <span class="pre">[flags]</span></code></p>
+<p>where <code class="docutils literal notranslate"><span class="pre">[flags]</span></code> is one or more of the following, with flags that require each other grouped together:</p>
+<p><strong>Required:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--startlatitude</span> <span class="pre">[latitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--startlongitude</span> <span class="pre">[longitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endlatitude</span> <span class="pre">[latitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endlongitude</span> <span class="pre">[longitude]</span></code></p>
+<blockquote>
+<div><p>The starting and ending latitude/longitude coordinates of the great-circle line.  Coordinates are expected to be in the ranges [-90,90] and [-180,180], respectively.</p>
+</div></blockquote>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--points</span></code></dt><dd><p>The number of points to extract in the line.</p>
+</dd>
+</dl>
+<p><strong>One of the following groups is required:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--date</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--hour</span> <span class="pre">[hour]</span></code></p>
+<blockquote>
+<div><p>The UTC date and hour  at which to extract the profile.</p>
+</div></blockquote>
+<p><strong>OR</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--startdate</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--starthour</span> <span class="pre">[hour]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--enddate</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endhour</span> <span class="pre">[hour]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--every</span> <span class="pre">[interval]</span></code></p>
+<blockquote>
+<div><p>The starting and ending dates and times for a range of multiple times, extracted at the requested interval (in hours).</p>
+</div></blockquote>
+<p><strong>Optional:</strong></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--outputformat</span> <span class="pre">[json|ncpaprop]</span></code></dt><dd><p>Specifies the format in which the profile(s) are output.  The default is <code class="docutils literal notranslate"><span class="pre">json</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--output</span> <span class="pre">[destination]</span></code></dt><dd><p>The destination for the output data.  The default is to print to the screen.  For <code class="docutils literal notranslate"><span class="pre">json</span></code> output this should be a file.  For <code class="docutils literal notranslate"><span class="pre">ncpaprop</span></code> output this should be a directory.</p>
+</dd>
+<dt><strong>Example Commands</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">line</span> <span class="pre">--date</span> <span class="pre">2023-08-10</span> <span class="pre">--hour</span> <span class="pre">0</span> <span class="pre">--startlat</span> <span class="pre">34.39</span> <span class="pre">--startlon</span> <span class="pre">-89.51</span> <span class="pre">--endlat</span> <span class="pre">35.23</span> <span class="pre">--endlon</span> <span class="pre">-106.66</span> <span class="pre">--points</span> <span class="pre">21</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">line</span> <span class="pre">--date</span> <span class="pre">2023-08-10</span> <span class="pre">--hour</span> <span class="pre">0</span> <span class="pre">--startlat</span> <span class="pre">34.39</span> <span class="pre">--startlon</span> <span class="pre">-89.51</span> <span class="pre">--endlat</span> <span class="pre">35.23</span> <span class="pre">--endlon</span> <span class="pre">-106.66</span> <span class="pre">--points</span> <span class="pre">21</span> <span class="pre">--outputformat</span> <span class="pre">ncpaprop</span> <span class="pre">--output</span> <span class="pre">/tmp/ms_to_abq</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="grid-an-evenly-spaced-line-of-points">
+<h2><code class="docutils literal notranslate"><span class="pre">grid</span></code>: An evenly-spaced line of points<a class="headerlink" href="#grid-an-evenly-spaced-line-of-points" title="Link to this heading">¶</a></h2>
+<p>This subcommand will extract an evenly-spaced grid of profiles in Mercator projection (i.e. evenly-spaced latitude and longitude intervals, not necessarily in physical distance).  Usage is:</p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">grid</span> <span class="pre">[flags]</span></code></p>
+<p>where <code class="docutils literal notranslate"><span class="pre">[flags]</span></code> is one or more of the following, with flags that require each other grouped together:</p>
+<p><strong>Required:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--startlatitude</span> <span class="pre">[latitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--startlongitude</span> <span class="pre">[longitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endlatitude</span> <span class="pre">[latitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endlongitude</span> <span class="pre">[longitude]</span></code></p>
+<blockquote>
+<div><p>The starting and ending latitude/longitude coordinates of the grid.  These will correspond to the lower-left (i.e. southwesternmost) and upper-right (i.e. northeasternmost) corners of the grid, respectively.  Coordinates are expected to be in the ranges [-90,90] and [-180,180], respectively.</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">--latpoints</span></code>
+<code class="docutils literal notranslate"><span class="pre">--lonpoints</span></code></p>
+<blockquote>
+<div><p>The number of latitude and longitude points to extract in the grid.</p>
+</div></blockquote>
+<p><strong>One of the following groups is required:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--date</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--hour</span> <span class="pre">[hour]</span></code></p>
+<blockquote>
+<div><p>The UTC date and hour  at which to extract the profile.</p>
+</div></blockquote>
+<p><strong>OR</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--startdate</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--starthour</span> <span class="pre">[hour]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--enddate</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endhour</span> <span class="pre">[hour]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--every</span> <span class="pre">[interval]</span></code></p>
+<blockquote>
+<div><p>The starting and ending dates and times for a range of multiple times, extracted at the requested interval (in hours).</p>
+</div></blockquote>
+<p><strong>Optional:</strong></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--outputformat</span> <span class="pre">[json|ncpaprop|infraga]</span></code></dt><dd><p>Specifies the format in which the profile(s) are output.  The default is <code class="docutils literal notranslate"><span class="pre">json</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--output</span> <span class="pre">[destination]</span></code></dt><dd><p>The destination for the output data.  The default is to print to the screen.  For <code class="docutils literal notranslate"><span class="pre">json</span></code> output this should be a file.  For <code class="docutils literal notranslate"><span class="pre">ncpaprop</span></code> or <code class="docutils literal notranslate"><span class="pre">infraga</span></code> output this should be a directory.</p>
+</dd>
+<dt><strong>Example Commands</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">grid</span> <span class="pre">--date</span> <span class="pre">2023-08-10</span> <span class="pre">--hour</span> <span class="pre">0</span> <span class="pre">--startlat</span> <span class="pre">34.0</span> <span class="pre">--startlon</span> <span class="pre">-89.0</span> <span class="pre">--endlat</span> <span class="pre">40.0</span> <span class="pre">--endlon</span> <span class="pre">-96.0</span> <span class="pre">--latpoints</span> <span class="pre">13</span> <span class="pre">--lonpoints</span> <span class="pre">15</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">grid</span> <span class="pre">--date</span> <span class="pre">2023-08-10</span> <span class="pre">--hour</span> <span class="pre">0</span> <span class="pre">--startlat</span> <span class="pre">34.39</span> <span class="pre">--startlon</span> <span class="pre">-89.51</span> <span class="pre">--endlat</span> <span class="pre">35.23</span> <span class="pre">--endlon</span> <span class="pre">-106.66</span> <span class="pre">--points</span> <span class="pre">21</span> <span class="pre">--outputformat</span> <span class="pre">infraga</span> <span class="pre">--output</span> <span class="pre">/tmp/testgrid</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id1">
+<h2><code class="docutils literal notranslate"><span class="pre">grid</span></code>: An evenly-spaced line of points<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>This subcommand will extract an evenly-spaced grid of profiles in Mercator projection (i.e. evenly-spaced latitude and longitude intervals, not necessarily in physical distance).  Usage is:</p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">grid</span> <span class="pre">[flags]</span></code></p>
+<p>where <code class="docutils literal notranslate"><span class="pre">[flags]</span></code> is one or more of the following, with flags that require each other grouped together:</p>
+<p><strong>Required:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--startlatitude</span> <span class="pre">[latitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--startlongitude</span> <span class="pre">[longitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endlatitude</span> <span class="pre">[latitude]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endlongitude</span> <span class="pre">[longitude]</span></code></p>
+<blockquote>
+<div><p>The starting and ending latitude/longitude coordinates of the grid.  These will correspond to the lower-left (i.e. southwesternmost) and upper-right (i.e. northeasternmost) corners of the grid, respectively.  Coordinates are expected to be in the ranges [-90,90] and [-180,180], respectively.</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">--latpoints</span></code>
+<code class="docutils literal notranslate"><span class="pre">--lonpoints</span></code></p>
+<blockquote>
+<div><p>The number of latitude and longitude points to extract in the grid.</p>
+</div></blockquote>
+<p><strong>One of the following groups is required:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--date</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--hour</span> <span class="pre">[hour]</span></code></p>
+<blockquote>
+<div><p>The UTC date and hour  at which to extract the profile.</p>
+</div></blockquote>
+<p><strong>OR</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">--startdate</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--starthour</span> <span class="pre">[hour]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--enddate</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--endhour</span> <span class="pre">[hour]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--every</span> <span class="pre">[interval]</span></code></p>
+<blockquote>
+<div><p>The starting and ending dates and times for a range of multiple times, extracted at the requested interval (in hours).</p>
+</div></blockquote>
+<p><strong>Optional:</strong></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--outputformat</span> <span class="pre">[json|ncpaprop|infraga]</span></code></dt><dd><p>Specifies the format in which the profile(s) are output.  The default is <code class="docutils literal notranslate"><span class="pre">json</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--output</span> <span class="pre">[destination]</span></code></dt><dd><p>The destination for the output data.  The default is to print to the screen.  For <code class="docutils literal notranslate"><span class="pre">json</span></code> output this should be a file.  For <code class="docutils literal notranslate"><span class="pre">ncpaprop</span></code> or <code class="docutils literal notranslate"><span class="pre">infraga</span></code> output this should be a directory.</p>
+</dd>
+<dt><strong>Example Commands</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">grid</span> <span class="pre">--date</span> <span class="pre">2023-08-10</span> <span class="pre">--hour</span> <span class="pre">0</span> <span class="pre">--startlat</span> <span class="pre">34.0</span> <span class="pre">--startlon</span> <span class="pre">-89.0</span> <span class="pre">--endlat</span> <span class="pre">40.0</span> <span class="pre">--endlon</span> <span class="pre">-96.0</span> <span class="pre">--latpoints</span> <span class="pre">13</span> <span class="pre">--lonpoints</span> <span class="pre">15</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">grid</span> <span class="pre">--date</span> <span class="pre">2023-08-10</span> <span class="pre">--hour</span> <span class="pre">0</span> <span class="pre">--startlat</span> <span class="pre">34.39</span> <span class="pre">--startlon</span> <span class="pre">-89.51</span> <span class="pre">--endlat</span> <span class="pre">35.23</span> <span class="pre">--endlon</span> <span class="pre">-106.66</span> <span class="pre">--points</span> <span class="pre">21</span> <span class="pre">--outputformat</span> <span class="pre">infraga</span> <span class="pre">--output</span> <span class="pre">/tmp/testgrid</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="raw-a-raw-g2s-coefficient-file">
+<h2><code class="docutils literal notranslate"><span class="pre">raw</span></code>: A raw G2S coefficient file<a class="headerlink" href="#raw-a-raw-g2s-coefficient-file" title="Link to this heading">¶</a></h2>
+<p>This subcommand will return a raw G2S coefficient file, for use if you are authorized to possess the G2S extraction software.  Usage is:</p>
+<p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">raw</span> <span class="pre">[flags]</span></code></p>
+<p>where <code class="docutils literal notranslate"><span class="pre">[flags]</span></code> is one or more of the following, with flags that require each other grouped together:</p>
+<p><strong>Required:</strong>
+<code class="docutils literal notranslate"><span class="pre">--date</span> <span class="pre">[date]</span></code>
+<code class="docutils literal notranslate"><span class="pre">--hour</span> <span class="pre">[hour]</span></code></p>
+<blockquote>
+<div><p>The UTC date and hour for the grid file.</p>
+</div></blockquote>
+<p><strong>Optional:</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--outputfile</span> <span class="pre">[filename]</span></code></dt><dd><p>Write the coefficients to this filename.  Default will let the server decide.</p>
+</dd>
+<dt><strong>Example Command</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">ncpag2s.py</span> <span class="pre">raw</span> <span class="pre">--date</span> <span class="pre">2023-07-04</span> <span class="pre">--hour</span> <span class="pre">12</span> <span class="pre">--outputfile</span> <span class="pre">tester.bin</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ncpag2s-clc</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#time-conventions">Time Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-formats">Output Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checktime-confirm-data-availability"><code class="docutils literal notranslate"><span class="pre">checktime</span></code>: Confirm data availability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#point-a-single-geographic-point"><code class="docutils literal notranslate"><span class="pre">point</span></code>: A single geographic point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#line-an-evenly-spaced-line-of-points"><code class="docutils literal notranslate"><span class="pre">line</span></code>: An evenly-spaced line of points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grid-an-evenly-spaced-line-of-points"><code class="docutils literal notranslate"><span class="pre">grid</span></code>: An evenly-spaced line of points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">grid</span></code>: An evenly-spaced line of points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raw-a-raw-g2s-coefficient-file"><code class="docutils literal notranslate"><span class="pre">raw</span></code>: A raw G2S coefficient file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="formats.html">Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorship.html">Authorship, Acknowledgements, and References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="overview.html" title="previous chapter">Overview</a></li>
+      <li>Next: <a href="formats.html" title="next chapter">Data Formats</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Claus Hetzer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/userguide.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

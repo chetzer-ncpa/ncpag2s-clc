@@ -1,0 +1,23 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Contents}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Overview}{1}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Installation}{1}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Operation}{1}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Output}{1}{subsection.1.1.3}%
+\contentsline {subsection}{\numberline {1.1.4}Quick Example}{1}{subsection.1.1.4}%
+\contentsline {section}{\numberline {1.2}User Guide}{2}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Time Conventions}{2}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Output Formats}{2}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}\sphinxstyleliteralintitle {\sphinxupquote {checktime}}: Confirm data availability}{2}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}\sphinxstyleliteralintitle {\sphinxupquote {point}}: A single geographic point}{2}{subsection.1.2.4}%
+\contentsline {subsection}{\numberline {1.2.5}\sphinxstyleliteralintitle {\sphinxupquote {line}}: An evenly\sphinxhyphen {}spaced line of points}{3}{subsection.1.2.5}%
+\contentsline {subsection}{\numberline {1.2.6}\sphinxstyleliteralintitle {\sphinxupquote {grid}}: An evenly\sphinxhyphen {}spaced line of points}{4}{subsection.1.2.6}%
+\contentsline {subsection}{\numberline {1.2.7}\sphinxstyleliteralintitle {\sphinxupquote {grid}}: An evenly\sphinxhyphen {}spaced line of points}{5}{subsection.1.2.7}%
+\contentsline {subsection}{\numberline {1.2.8}\sphinxstyleliteralintitle {\sphinxupquote {raw}}: A raw G2S coefficient file}{5}{subsection.1.2.8}%
+\contentsline {section}{\numberline {1.3}Data Formats}{6}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}JSON Format}{6}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}NCPAprop Format}{7}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}InfraGA Format}{8}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}Authorship, Acknowledgements, and References}{8}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Citing NCPA\sphinxhyphen {}G2S and the CLI}{8}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}G2S Data Sources}{9}{subsection.1.4.2}%
