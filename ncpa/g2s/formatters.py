@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 import json
 import os
 import sys
+from copy import deepcopy
 
 from ncpa.geographic import Location
 from ncpa.object_factory import ObjectFactory
@@ -195,32 +196,20 @@ class NCPAPropG2SFormatter(G2SFormatter):
         except TypeError:
             raise TypeError(f'output must be string, bytes, os.PathLike or integer')
         os.makedirs(output,exist_ok=True)
-        try:
-            latsfile = kwargs['latfile']
-        except KeyError:
-            latsfile = os.path.join(output,'lats.dat')
-        try:
-            lonsfile = kwargs['lonfile']
-        except KeyError:
-            lonsfile = os.path.join(output,'lons.dat')
         
         grid.finalize()
-        lats, lons = grid.get_unique_coordinates()
-        timestr = grid[0].time.strftime('%y%m%d%H')
-        filebase = f'grid{timestr}{lats[0]:+08.5f}{lons[0]:+09.5f}{lats[-1]:+08.5f}{lons[-1]:+09.5f}_'
-        count = 0
-        for profile in grid.get_profiles():
-            profile_filename = f'{filebase}{count}.met'
-            self.format(profile,output=os.path.join(output,profile_filename))
-            count += 1
-        with open(latsfile,'wt') as fid:
-            for lat in lats:
-                fid.write(f'{float(lat)}\n')
-        with open(lonsfile,'wt') as fid:
-            for lon in lons:
-                fid.write(f'{float(lon)}\n')
-        with open('flags.txt','wt') as fid:
-            fid.write(f'--atmo-prefix {os.path.join(output,filebase)} --grid-lats {latsfile} --grid-lons {lonsfile}\n')
+        timestr = grid[0].time.strftime('%Y%m%d%H')
+        summaryfile = os.path.join(output,f'summary{index}.dat')
+        if os.path.exists(summaryfile):
+            raise FileExistsError(f'{summaryfile} already exists!  Please delete before retrying')
+        profilesubdir = f'profiles{index}'
+        profiledir = os.path.join(output,profilesubdir)
+        os.makedirs(profiledir,exist_ok=True)
+        with open(summaryfile,'wt') as summary:
+            for profile in grid.get_profiles():
+                profile_filename = f'g2stxt_{timestr}_{profile.location.latitude:0.4f}_{profile.location.longitude:0.4f}.dat'
+                self.format(profile,output=os.path.join(profiledir,profile_filename))
+                summary.write(f'{profile.location.latitude:0.4f} {profile.location.longitude:0.4f} {profilesubdir}/{profile_filename}\n')
         
         
     def format_line(self,line,index='',output='.',*args,**kwargs):
@@ -266,11 +255,49 @@ class NCPAPropG2SFormatter(G2SFormatter):
 class InfraGAFormatter(NCPAPropG2SFormatter):
     def format_profile(self,profile,*args,**kwargs):
         # check density units
-        if profile.parameters['R'].units == 'kg/m3':
-            profile.parameters['R'].scale(0.001)
-            profile.parameters['R'].units = 'g/cm3'
-        super().format_profile(profile,*args,**kwargs)
+        newprofile = deepcopy(profile)
+        if newprofile.parameters['R'].units == 'kg/m3':
+            newprofile.parameters['R'].scale(0.001)
+            newprofile.parameters['R'].units = 'g/cm3'
+        super().format_profile(newprofile,*args,**kwargs)
             
+    def format_grid(self,grid,index='',output='.',*args,**kwargs):
+        if len(grid) == 1:
+            return self.format_profile(grid[0],output=output,*args,**kwargs)
+        # make sure output is a string that represents a directory
+        try:
+            if os.path.exists(output) and not os.path.isdir(output):
+                raise FileExistsError(f'{output} exists but is not a directory!')
+        except TypeError:
+            raise TypeError(f'output must be string, bytes, os.PathLike or integer')
+        os.makedirs(output,exist_ok=True)
+        try:
+            latsfile = kwargs['latfile']
+        except KeyError:
+            latsfile = os.path.join(output,'lats.dat')
+        try:
+            lonsfile = kwargs['lonfile']
+        except KeyError:
+            lonsfile = os.path.join(output,'lons.dat')
+        
+        grid.finalize()
+        lats, lons = grid.get_unique_coordinates()
+        timestr = grid[0].time.strftime('%y%m%d%H')
+        filebase = f'grid{timestr}{lats[0]:+08.5f}{lons[0]:+09.5f}{lats[-1]:+08.5f}{lons[-1]:+09.5f}_'
+        count = 0
+        for profile in grid.get_profiles():
+            profile_filename = f'{filebase}{count}.met'
+            self.format(profile,output=os.path.join(output,profile_filename))
+            count += 1
+        with open(latsfile,'wt') as fid:
+            for lat in lats:
+                fid.write(f'{float(lat)}\n')
+        with open(lonsfile,'wt') as fid:
+            for lon in lons:
+                fid.write(f'{float(lon)}\n')
+        with open(os.path.join(output,'flags.txt'),'wt') as fid:
+            fid.write(f'--atmo-prefix {os.path.join(output,filebase)} --grid-lats {latsfile} --grid-lons {lonsfile}\n')
+        
 
 class JSONG2SFormatter(G2SFormatter):
     def __init__(self,indent=NCPA_G2S_DEFAULT_JSON_INDENT,*args,**kwargs):

@@ -42,7 +42,7 @@ class Command(BaseCommand):
         add_date_arguments(parser,single=True,multiple=False)
         add_grid_location_arguments(parser,required=True)
         parser.add_argument(
-            "--outputformat", nargs='?', choices=['json','infraga'], default='json', help='Output format'
+            "--outputformat", nargs='?', choices=['json','ncpaprop','infraga'], default='json', help='Output format'
         )
         
         
