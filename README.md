@@ -1,4 +1,5 @@
 # NCPAG2S Command-Line Client
+## Version 1.0.0
 
 ## Installation
 Just download and optionally place the root directory of the repository in your PATH.  No additional packages are required.
