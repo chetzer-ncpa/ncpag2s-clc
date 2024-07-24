@@ -268,6 +268,8 @@ class G2SProfileLine(G2SProfileSet):
         
     
 class G2SProfileGrid(G2SProfileSet):
+    _default_sort_ = ('y','x')
+    
     def __init__(self,*args,**kwargs):
         super().__init__(set_type='grid',*args,**kwargs)
         
@@ -289,14 +291,25 @@ class G2SProfileGrid(G2SProfileSet):
             lons.add(p.location.longitude)
         return list(sorted(lats)), list(sorted(lons))
     
-    def assign_grid_indices(self):
+    def assign_grid_indices(self,sort=True):
         lats, lons = self.get_unique_coordinates()
         lat_dict = {lat: i for (i,lat) in enumerate(sorted(lats))}
         lon_dict = {lon: i for (i,lon) in enumerate(sorted(lons))}
         for p in self.profiles:
             p.set_metadata('x_index',lon_dict[p.location.longitude])
             p.set_metadata('y_index',lat_dict[p.location.latitude])
-        self.profiles.sort(key=lambda p: (p.metadata['x_index'],p.metadata['y_index']))
+        if sort:
+            self.sort(firstindex='y')
+        
+    def sort(self,firstindex='y'):
+        if firstindex.lower() != 'y' and firstindex.lower() != 'x':
+            raise ValueError(f'First index provided is {firstindex}, must be "x" or "y"')
+        if firstindex == 'y':
+            self.profiles.sort(key=lambda p: (p.metadata['y_index'],p.metadata['x_index']))
+        else:
+            self.profiles.sort(key=lambda p: (p.metadata['x_index'],p.metadata['y_index']))
+        
+                
     
     # def sort_by_xy(self):
     #     lats, lons = self.get_unique_coordinates()

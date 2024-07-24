@@ -5,7 +5,7 @@ be executed through ``g2scli.py``).
 Adapted from the django Management system.
 """
 import argparse
-import logging
+# import logging
 import os
 import sys
 from argparse import ArgumentParser, HelpFormatter
@@ -290,38 +290,38 @@ class BaseCommand:
             help="Show program's version number and exit.",
         )
         self.add_arguments(parser)
-        self.add_base_argument(
-            parser,
-            "-v",
-            "--verbosity",
-            default=config['logging'].get('level','warning'),
-            type=str,
-            choices=['debug','info','warning','error','critical'],
-            help=(
-                "Verbosity level"
-            ),
-        )
-        self.add_base_argument(
-            parser,
-            "--logfile",
-            default=None,
-            type=str,
-            nargs='+',
-            help="File for log messages instead of stdout/stderr",
-        )
-        self.add_base_argument(
-            parser,
-            "--stdout",
-            action="store_true",
-            help="Log to stdout/stderr as well as to --logfile",
-            )
-        self.add_base_argument(
-            parser,
-            "--logargs",
-            default=None,
-            type=str,
-            help="Arguments to pass to logger, as key=value,key=value,etc"
-            )
+        # self.add_base_argument(
+        #     parser,
+        #     "-v",
+        #     "--verbosity",
+        #     default=config['logging'].get('level','warning'),
+        #     type=str,
+        #     choices=['debug','info','warning','error','critical'],
+        #     help=(
+        #         "Verbosity level"
+        #     ),
+        # )
+        # self.add_base_argument(
+        #     parser,
+        #     "--logfile",
+        #     default=None,
+        #     type=str,
+        #     nargs='+',
+        #     help="File for log messages instead of stdout/stderr",
+        # )
+        # self.add_base_argument(
+        #     parser,
+        #     "--stdout",
+        #     action="store_true",
+        #     help="Log to stdout/stderr as well as to --logfile",
+        #     )
+        # self.add_base_argument(
+        #     parser,
+        #     "--logargs",
+        #     default=None,
+        #     type=str,
+        #     help="Arguments to pass to logger, as key=value,key=value,etc"
+        #     )
         self.add_base_argument(
             parser,
             "--output", 
@@ -400,40 +400,40 @@ class BaseCommand:
                 self.stderr.write("%s: %s" % (e.__class__.__name__, e))
             sys.exit(e.returncode)
     
-    def setup_logging(self, loggername='g2scli', *args, **options):
-        logargs = {}
-        if options.get('logargs'):
-            kvpairs = options.get('logargs').split(',')
-            for pair in kvpairs:
-                k,v = pair.split('=')
-                if v:
-                    logargs[k] = v
-        logging.basicConfig(
-            format='%(asctime)s|%(levelname)-8s|%(message)s',
-            level=logging.CRITICAL,
-            encoding='utf-8',
-            datefmt='%Y%m%d %H%M%S',
-            **logargs
-            )
-        logger = logging.getLogger(loggername)
-        formatter = logging.Formatter('%(asctime)s|%(levelname)-8s|%(message)s')
-        if options.get('logfile'):
-            for logfile in options.get('logfile'):
-                fh = logging.FileHandler(logfile)
-                fh.setLevel(getattr(logging, options.get('verbosity').upper()))
-                fh.setFormatter(formatter)
-                logger.addHandler(fh)
-        if options.get('stdout') or (not options.get('logfile')):
-            herr = logging.StreamHandler(self.stderr)
-            herr.setFormatter(formatter)
-            herr.setLevel(logging.WARNING)
-            hout = logging.StreamHandler(self.stdout)
-            hout.setFormatter(formatter)
-            hout.setLevel(getattr(logging, options.get('verbosity').upper()))
-            logger.addHandler(hout)
-            logger.addHandler(herr)
-        logger.propagate = True
-        return logger
+    # def setup_logging(self, loggername='g2scli', *args, **options):
+    #     logargs = {}
+    #     if options.get('logargs'):
+    #         kvpairs = options.get('logargs').split(',')
+    #         for pair in kvpairs:
+    #             k,v = pair.split('=')
+    #             if v:
+    #                 logargs[k] = v
+    #     logging.basicConfig(
+    #         format='%(asctime)s|%(levelname)-8s|%(message)s',
+    #         level=logging.CRITICAL,
+    #         encoding='utf-8',
+    #         datefmt='%Y%m%d %H%M%S',
+    #         **logargs
+    #         )
+    #     logger = logging.getLogger(loggername)
+    #     formatter = logging.Formatter('%(asctime)s|%(levelname)-8s|%(message)s')
+    #     if options.get('logfile'):
+    #         for logfile in options.get('logfile'):
+    #             fh = logging.FileHandler(logfile)
+    #             fh.setLevel(getattr(logging, options.get('verbosity').upper()))
+    #             fh.setFormatter(formatter)
+    #             logger.addHandler(fh)
+    #     if options.get('stdout') or (not options.get('logfile')):
+    #         herr = logging.StreamHandler(self.stderr)
+    #         herr.setFormatter(formatter)
+    #         herr.setLevel(logging.WARNING)
+    #         hout = logging.StreamHandler(self.stdout)
+    #         hout.setFormatter(formatter)
+    #         hout.setLevel(getattr(logging, options.get('verbosity').upper()))
+    #         logger.addHandler(hout)
+    #         logger.addHandler(herr)
+    #     logger.propagate = True
+    #     return logger
 
     def execute(self, *args, **options):
         """

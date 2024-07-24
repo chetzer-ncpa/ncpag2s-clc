@@ -36,7 +36,6 @@ class Command(BaseCommand):
         --endlat 35.23 --endlon -106.66 --points 21 --outputformat infraga 
         --output /tmp/testgrid
         '''
-        
     ]
     
     def add_arguments(self,parser):
@@ -48,7 +47,6 @@ class Command(BaseCommand):
         
         
     def handle(self,*args,**options):
-        logger = self.setup_logging(loggername=__name__,*args,**options)
         chunksize = config['requests'].getint('chunksize',2048)
         encoding = config['requests'].get('encoding','utf-8')
         timeout = config['requests'].getint('timeout',30)
@@ -63,8 +61,6 @@ class Command(BaseCommand):
         t = times[0]
         
         url = format_url('grid', time=t, **params)
-        logger.debug(f'Built URL={url}')
-        # print(url)
         holder = StringIO(initial_value='')
         try:
             request_and_write(
@@ -78,6 +74,7 @@ class Command(BaseCommand):
         jsontext = holder.getvalue()
         grid = json.loads(jsontext,cls=G2SProfileDecoder)
         holder.close()
+        grid.sort()
         
         formatargs={}
         if options['output']:
