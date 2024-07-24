@@ -322,14 +322,14 @@ class BaseCommand:
         #     type=str,
         #     help="Arguments to pass to logger, as key=value,key=value,etc"
         #     )
-        self.add_base_argument(
-            parser,
-            "--output", 
-            nargs='?',
-            type=str,
-            default=None, 
-            help='Output file or directory, as appropriate'
-        )
+        # self.add_base_argument(
+        #     parser,
+        #     "--output", 
+        #     nargs='?',
+        #     type=str,
+        #     default=None, 
+        #     help='Output file or directory, as appropriate'
+        # )
         self.add_base_argument(
             parser,
             "--pythonpath",

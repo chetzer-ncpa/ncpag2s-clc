@@ -14,7 +14,7 @@ class Command(BaseCommand):
     
     # help = __doc__
     examples = [
-        '%(prog)s --year 2023 --month 7 --day 4 --hour 12',
+        '%(prog)s --date 2023-08-01 --hour 12',
     ]
     
 
@@ -27,7 +27,7 @@ class Command(BaseCommand):
         if time_is_in_database(times[0], **options):
             print(f"Time {times[0].strftime('%Y-%m-%d %H:00:00')} UTC is available")
         else:
-            raise CommandError(f"Time {times[0].strftime('%Y-%m-%d %H:00:00')} UTC is not available")
+            print(f"Time {times[0].strftime('%Y-%m-%d %H:00:00')} UTC is not available")
             
                 
                 

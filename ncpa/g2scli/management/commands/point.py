@@ -37,6 +37,9 @@ class Command(BaseCommand):
         add_date_arguments(parser,single=True,multiple=True)
         add_point_location_arguments(parser,required=True)
         parser.add_argument(
+            "--output", nargs='?', type=str, default=None, help='Output file or directory, as appropriate'
+        )
+        parser.add_argument(
             "--outputformat", nargs='?', choices=['ncpaprop','json'], default='json', help='Output format'
         )
         # parser.add_argument(
