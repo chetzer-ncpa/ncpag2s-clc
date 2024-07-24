@@ -1,4 +1,5 @@
 # NCPAG2S Command-Line Client
+## Version 1.0.0
 
 ## Installation
 Just download and optionally place the root directory of the repository in your PATH.  No additional packages are required.
@@ -45,7 +46,7 @@ The command-line client supports the following types of requests, all of which c
 
 - **`point`**: Returns the atmospheric profiles at the single specified location.
 - **`line`**: An evenly-spaced line of profiles along the great-circle path between two points.
-- **`grid`**: (not yet developed) An evenly-spaced grid of profiles between two corner points, assuming Mercator projection.
+- **`grid`**: An evenly-spaced grid of profiles between two corner points, assuming Mercator projection.
 - **`fan`**: (not yet developed) A set of great-circle paths originating at a single point and fanning out over a range of azimuths.
 - **`raw`**: The raw G2S coefficient file for a single time.  Note that proprietary software is required to read this file format.  If you don't know what that software is, then you don't have access to it and the raw file will not be of use.
 
