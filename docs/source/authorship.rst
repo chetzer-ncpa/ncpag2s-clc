@@ -24,8 +24,8 @@ For the G2S model itself:
 	* Drob, D.P. (2019). "Meteorology, climatology, and upper atmospheric composition for infrasound propagation modeling". in Le Pichon, A., Blanc, E., and Hauchecorne, A. (eds.), *Infrasound Monitoring for Atmospheric Studies, 2nd. ed.*, Springer, doi: `10.1007/978-3-319-75140-5 <https://doi.org/10.1007/978-3-319-75140-5>`_.
 
 For data from the NCPA-G2S System:
-	* Hetzer, C., Drob, D.P., & Zabel, K. (2019). "The NCPS-G2S request system".  https://g2s.ncpa.olemiss.edu _.
-	* Hetzer, C. (2024). "The NCPAG2S Command-Line Client".  
+	* Hetzer, C.H., Drob, D.P., & Zabel, K. (2019). "The NCPA-G2S request system".  https://g2s.ncpa.olemiss.edu _.
+	* Hetzer, C.H. (2024). "The NCPAG2S Command-Line Client".  
 
 ----------------
 G2S Data Sources

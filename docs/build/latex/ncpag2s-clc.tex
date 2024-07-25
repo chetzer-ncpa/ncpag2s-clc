@@ -10,9 +10,6 @@
 %% let collapsible pdf bookmarks panel have high depth per default
 \PassOptionsToPackage{bookmarksdepth=5}{hyperref}
 
-\PassOptionsToPackage{booktabs}{sphinx}
-\PassOptionsToPackage{colorrows}{sphinx}
-
 \PassOptionsToPackage{warn}{textcomp}
 \usepackage[utf8]{inputenc}
 \ifdefined\DeclareUnicodeCharacter
@@ -63,18 +60,13 @@
 
 
 \title{ncpag2s\sphinxhyphen{}clc}
-\date{Jul 24, 2024}
+\date{Jul 25, 2024}
 \release{1.0.0}
 \author{Claus Hetzer}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{Release}
 \makeindex
 \begin{document}
-
-\ifdefined\shorthandoff
-  \ifnum\catcode`\=\string=\active\shorthandoff{=}\fi
-  \ifnum\catcode`\"=\active\shorthandoff{"}\fi
-\fi
 
 \pagestyle{empty}
 \sphinxmaketitle
@@ -87,8 +79,6 @@
 
 \chapter{Contents}
 \label{\detokenize{index:contents}}
-\sphinxstepscope
-
 
 \section{Overview}
 \label{\detokenize{overview:overview}}\label{\detokenize{overview:id1}}\label{\detokenize{overview::doc}}
@@ -124,8 +114,6 @@ With \sphinxcode{\sphinxupquote{ncpag2s.py}} in your path, enter:
 
 \sphinxAtStartPar
 All request commands will be in similar formats, with the switchboard program \sphinxcode{\sphinxupquote{ncpag2s.py}}, the subcommand (in this case \sphinxcode{\sphinxupquote{point}}), and flags following.
-
-\sphinxstepscope
 
 
 \section{User Guide}
@@ -170,7 +158,7 @@ where \sphinxcode{\sphinxupquote{{[}flags{]}}} is one or more of the following, 
 The UTC date and hour for the grid file.
 \end{quote}
 \begin{description}
-\sphinxlineitem{\sphinxstylestrong{Example Command}}
+\item[{\sphinxstylestrong{Example Command}}] \leavevmode
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{ncpag2s.py checktime \sphinxhyphen{}\sphinxhyphen{}date 2023\sphinxhyphen{}08\sphinxhyphen{}01 \sphinxhyphen{}\sphinxhyphen{}hour 8}}
 
@@ -233,15 +221,15 @@ The starting and ending dates and times for a range of multiple times, extracted
 \sphinxAtStartPar
 \sphinxstylestrong{Optional:}
 \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop{]}}}}] \leavevmode
 \sphinxAtStartPar
 Specifies the format in which the profile(s) are output.  The default is \sphinxcode{\sphinxupquote{json}}.
 
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}] \leavevmode
 \sphinxAtStartPar
 The destination for the output data.  The default is to print to the screen.  For \sphinxcode{\sphinxupquote{json}} output this should be a file.  For \sphinxcode{\sphinxupquote{ncpaprop}} output this should be a file for single\sphinxhyphen{}time requests, or a directory for multi\sphinxhyphen{}time requests.
 
-\sphinxlineitem{\sphinxstylestrong{Example Commands}}
+\item[{\sphinxstylestrong{Example Commands}}] \leavevmode
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{ncpag2s.py point \sphinxhyphen{}\sphinxhyphen{}date 2023\sphinxhyphen{}07\sphinxhyphen{}04 \sphinxhyphen{}\sphinxhyphen{}hour 12 \sphinxhyphen{}\sphinxhyphen{}lat 37.867 \sphinxhyphen{}\sphinxhyphen{}lon \sphinxhyphen{}122.259}}
 
@@ -276,7 +264,7 @@ where \sphinxcode{\sphinxupquote{{[}flags{]}}} is one or more of the following, 
 The starting and ending latitude/longitude coordinates of the great\sphinxhyphen{}circle line.  Coordinates are expected to be in the ranges {[}\sphinxhyphen{}90,90{]} and {[}\sphinxhyphen{}180,180{]}, respectively.
 \end{quote}
 \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}points}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}points}}}] \leavevmode
 \sphinxAtStartPar
 The number of points to extract in the line.
 
@@ -312,15 +300,15 @@ The starting and ending dates and times for a range of multiple times, extracted
 \sphinxAtStartPar
 \sphinxstylestrong{Optional:}
 \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop{]}}}}] \leavevmode
 \sphinxAtStartPar
 Specifies the format in which the profile(s) are output.  The default is \sphinxcode{\sphinxupquote{json}}.
 
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}] \leavevmode
 \sphinxAtStartPar
 The destination for the output data.  The default is to print to the screen.  For \sphinxcode{\sphinxupquote{json}} output this should be a file.  For \sphinxcode{\sphinxupquote{ncpaprop}} output this should be a directory.
 
-\sphinxlineitem{\sphinxstylestrong{Example Commands}}
+\item[{\sphinxstylestrong{Example Commands}}] \leavevmode
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{ncpag2s.py line \sphinxhyphen{}\sphinxhyphen{}date 2023\sphinxhyphen{}08\sphinxhyphen{}10 \sphinxhyphen{}\sphinxhyphen{}hour 0 \sphinxhyphen{}\sphinxhyphen{}startlat 34.39 \sphinxhyphen{}\sphinxhyphen{}startlon \sphinxhyphen{}89.51 \sphinxhyphen{}\sphinxhyphen{}endlat 35.23 \sphinxhyphen{}\sphinxhyphen{}endlon \sphinxhyphen{}106.66 \sphinxhyphen{}\sphinxhyphen{}points 21}}
 
@@ -394,15 +382,15 @@ The starting and ending dates and times for a range of multiple times, extracted
 \sphinxAtStartPar
 \sphinxstylestrong{Optional:}
 \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop|infraga{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop|infraga{]}}}}] \leavevmode
 \sphinxAtStartPar
 Specifies the format in which the profile(s) are output.  The default is \sphinxcode{\sphinxupquote{json}}.
 
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}] \leavevmode
 \sphinxAtStartPar
 The destination for the output data.  The default is to print to the screen.  For \sphinxcode{\sphinxupquote{json}} output this should be a file.  For \sphinxcode{\sphinxupquote{ncpaprop}} or \sphinxcode{\sphinxupquote{infraga}} output this should be a directory.
 
-\sphinxlineitem{\sphinxstylestrong{Example Commands}}
+\item[{\sphinxstylestrong{Example Commands}}] \leavevmode
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{ncpag2s.py grid \sphinxhyphen{}\sphinxhyphen{}date 2023\sphinxhyphen{}08\sphinxhyphen{}10 \sphinxhyphen{}\sphinxhyphen{}hour 0 \sphinxhyphen{}\sphinxhyphen{}startlat 34.0 \sphinxhyphen{}\sphinxhyphen{}startlon \sphinxhyphen{}89.0 \sphinxhyphen{}\sphinxhyphen{}endlat 40.0 \sphinxhyphen{}\sphinxhyphen{}endlon \sphinxhyphen{}96.0 \sphinxhyphen{}\sphinxhyphen{}latpoints 13 \sphinxhyphen{}\sphinxhyphen{}lonpoints 15}}
 
@@ -476,15 +464,15 @@ The starting and ending dates and times for a range of multiple times, extracted
 \sphinxAtStartPar
 \sphinxstylestrong{Optional:}
 \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop|infraga{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop|infraga{]}}}}] \leavevmode
 \sphinxAtStartPar
 Specifies the format in which the profile(s) are output.  The default is \sphinxcode{\sphinxupquote{json}}.
 
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}] \leavevmode
 \sphinxAtStartPar
 The destination for the output data.  The default is to print to the screen.  For \sphinxcode{\sphinxupquote{json}} output this should be a file.  For \sphinxcode{\sphinxupquote{ncpaprop}} or \sphinxcode{\sphinxupquote{infraga}} output this should be a directory.
 
-\sphinxlineitem{\sphinxstylestrong{Example Commands}}
+\item[{\sphinxstylestrong{Example Commands}}] \leavevmode
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{ncpag2s.py grid \sphinxhyphen{}\sphinxhyphen{}date 2023\sphinxhyphen{}08\sphinxhyphen{}10 \sphinxhyphen{}\sphinxhyphen{}hour 0 \sphinxhyphen{}\sphinxhyphen{}startlat 34.0 \sphinxhyphen{}\sphinxhyphen{}startlon \sphinxhyphen{}89.0 \sphinxhyphen{}\sphinxhyphen{}endlat 40.0 \sphinxhyphen{}\sphinxhyphen{}endlon \sphinxhyphen{}96.0 \sphinxhyphen{}\sphinxhyphen{}latpoints 13 \sphinxhyphen{}\sphinxhyphen{}lonpoints 15}}
 
@@ -518,17 +506,15 @@ The UTC date and hour for the grid file.
 \sphinxAtStartPar
 \sphinxstylestrong{Optional:}
 \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputfile {[}filename{]}}}}
+\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputfile {[}filename{]}}}}] \leavevmode
 \sphinxAtStartPar
 Write the coefficients to this filename.  Default will let the server decide.
 
-\sphinxlineitem{\sphinxstylestrong{Example Command}}
+\item[{\sphinxstylestrong{Example Command}}] \leavevmode
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{ncpag2s.py raw \sphinxhyphen{}\sphinxhyphen{}date 2023\sphinxhyphen{}07\sphinxhyphen{}04 \sphinxhyphen{}\sphinxhyphen{}hour 12 \sphinxhyphen{}\sphinxhyphen{}outputfile tester.bin}}
 
 \end{description}
-
-\sphinxstepscope
 
 
 \section{Data Formats}
@@ -655,8 +641,6 @@ Because this format was designed for single\sphinxhyphen{}location profiles only
 \sphinxAtStartPar
 This data format is available for grid requests only and is intended to work with the range\sphinxhyphen{}dependent modules of the LANL \sphinxhref{https://github.com/LANL-Seismoacoustics/infraGA}{InfraGA} geometric acoustics package.  It is similar to the \sphinxcode{\sphinxupquote{ncpaprop}} format, except that two summary files are created, one with the latitude points and one with the longitude points, and the filename structure is changed to that expected by the range\sphinxhyphen{}dependent InfraGA modules.  A third file \sphinxcode{\sphinxupquote{flags.txt}} is also generated, providing the flags to use with InfraGA in order to read the grid files.
 
-\sphinxstepscope
-
 
 \section{Authorship, Acknowledgements, and References}
 \label{\detokenize{authorship:authorship-acknowledgements-and-references}}\label{\detokenize{authorship:authorship}}\label{\detokenize{authorship::doc}}
@@ -676,7 +660,7 @@ Claus Hetzer
 \sphinxAtStartPar
 Publications that make use of data from the NCPA\sphinxhyphen{}G2S system are kindly requested to cite one or more of the following references, as appropriate:
 \begin{description}
-\sphinxlineitem{For the G2S model itself:}\begin{itemize}
+\item[{For the G2S model itself:}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 Drob, D.P., Picone, J.M., \& Garces, M. (2003). “Global morphology of infrasound propagation”. \sphinxstyleemphasis{Journal of Geophysical Research}, \sphinxstylestrong{108} (D21), 4680. doi: \sphinxhref{https://doi.org/10.1029/2002JD003307}{10.1029/2002JD003307}.
@@ -691,14 +675,14 @@ Drob, D.P. (2019). “Meteorology, climatology, and upper atmospheric compositio
 
 \end{itemize}
 
-\sphinxlineitem{For data from the NCPA\sphinxhyphen{}G2S System:}\begin{itemize}
+\item[{For data from the NCPA\sphinxhyphen{}G2S System:}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-Hetzer, C., Drob, D.P., \& Zabel, K. (2019). “The NCPS\sphinxhyphen{}G2S request system”.  \sphinxurl{https://g2s.ncpa.olemiss.edu} \_.
+Hetzer, C.H., Drob, D.P., \& Zabel, K. (2019). “The NCPA\sphinxhyphen{}G2S request system”.  \sphinxurl{https://g2s.ncpa.olemiss.edu} \_.
 
 \item {} 
 \sphinxAtStartPar
-Hetzer, C. (2024). “The NCPAG2S Command\sphinxhyphen{}Line Client”.
+Hetzer, C.H. (2024). “The NCPAG2S Command\sphinxhyphen{}Line Client”.
 
 \end{itemize}
 
