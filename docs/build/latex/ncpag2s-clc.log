@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.4.13)  25 JUL 2024 17:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.4.13)  19 AUG 2024 18:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -763,7 +763,13 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
 
 
-] (./ncpag2s-clc.toc)
+] (./ncpag2s-clc.toc
+LaTeX Font Info:    Trying to load font information for T1+txtt on input line 1
+0.
+
+(/usr/share/texlive/texmf-dist/tex/latex/txfonts/t1txtt.fd
+File: t1txtt.fd 2000/12/15 v3.1
+))
 \tf@toc=\write6
 \openout6 = `ncpag2s-clc.toc'.
 
@@ -774,142 +780,147 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ]
 Chapter 1.
 LaTeX Font Info:    Trying to load font information for TS1+qtm on input line 9
-8.
+5.
 (/usr/share/texmf/tex/latex/tex-gyre/ts1qtm.fd
 File: ts1qtm.fd 2009/09/25 v1.2 font definition file for TS1/qtm
-)
-LaTeX Font Info:    Trying to load font information for T1+txtt on input line 9
-8.
-
-(/usr/share/texlive/texmf-dist/tex/latex/txfonts/t1txtt.fd
-File: t1txtt.fd 2000/12/15 v3.1
 ) [1
 
-]
-LaTeX Font Info:    Font shape `T1/txtt/b/n' in size <12> not available
-(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 137.
- [2]
-LaTeX Font Info:    Font shape `T1/txtt/b/n' in size <10> not available
-(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 224.
+] [2
 
-Underfull \hbox (badness 10000) in paragraph at lines 232--235
+]
+Chapter 2.
+LaTeX Font Info:    Font shape `T1/txtt/b/n' in size <14.4> not available
+(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 134.
+[3]
+LaTeX Font Info:    Font shape `T1/txtt/b/n' in size <10> not available
+(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 221.
+
+Underfull \hbox (badness 10000) in paragraph at lines 229--232
 []\T1/txtt/m/n/10 ncpag2s.py point --date 2023-07-04 --hour 12 --lat 37.867 --l
 on -122.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 236--238
+Underfull \hbox (badness 10000) in paragraph at lines 233--235
 []\T1/txtt/m/n/10 ncpag2s.py point --date 2023-07-04 --hour 12 --lat 37.867 --l
 on -122.259
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 256--261
+Underfull \hbox (badness 10000) in paragraph at lines 253--258
 []\T1/txtt/m/n/10 --startlatitude [latitude] --startlongitude [longitude] --end
 latitude [latitude]
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 311--314
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 308--311
 []\T1/txtt/m/n/10 ncpag2s.py line --date 2023-08-10 --hour 0 --startlat 34.39 -
 -startlon
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 315--317
+Underfull \hbox (badness 10000) in paragraph at lines 312--314
 []\T1/txtt/m/n/10 ncpag2s.py line --date 2023-08-10 --hour 0 --startlat 34.39 -
 -startlon -89.51
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 315--317
+Underfull \hbox (badness 10000) in paragraph at lines 312--314
 \T1/txtt/m/n/10 --endlat 35.23 --endlon -106.66 --points 21 --outputformat ncpa
 prop --output /tmp/
  []
 
-[3]
-Underfull \hbox (badness 10000) in paragraph at lines 335--340
+
+Underfull \hbox (badness 10000) in paragraph at lines 332--337
 []\T1/txtt/m/n/10 --startlatitude [latitude] --startlongitude [longitude] --end
 latitude [latitude]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 393--396
-[]\T1/txtt/m/n/10 ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.0 --
-startlon
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 397--399
-[]\T1/txtt/m/n/10 ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.39 -
--startlon -89.51
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 397--399
-\T1/txtt/m/n/10 --endlat 35.23 --endlon -106.66 --points 21 --outputformat infr
-aga --output /tmp/
- []
-
-[4]
-Underfull \hbox (badness 10000) in paragraph at lines 417--422
-[]\T1/txtt/m/n/10 --startlatitude [latitude] --startlongitude [longitude] --end
-latitude [latitude]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 475--478
-[]\T1/txtt/m/n/10 ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.0 --
-startlon
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 479--481
-[]\T1/txtt/m/n/10 ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.39 -
--startlon -89.51
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 479--481
-\T1/txtt/m/n/10 --endlat 35.23 --endlon -106.66 --points 21 --outputformat infr
-aga --output /tmp/
  []
 
 [5]
+Underfull \hbox (badness 10000) in paragraph at lines 390--393
+[]\T1/txtt/m/n/10 ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.0 --
+startlon
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 394--396
+[]\T1/txtt/m/n/10 ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.39 -
+-startlon -89.51
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 394--396
+\T1/txtt/m/n/10 --endlat 35.23 --endlon -106.66 --points 21 --outputformat infr
+aga --output /tmp/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 414--419
+[]\T1/txtt/m/n/10 --startlatitude [latitude] --startlongitude [longitude] --end
+latitude [latitude]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 472--475
+[]\T1/txtt/m/n/10 ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.0 --
+startlon
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 476--478
+[]\T1/txtt/m/n/10 ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.39 -
+-startlon -89.51
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 476--478
+\T1/txtt/m/n/10 --endlat 35.23 --endlon -106.66 --points 21 --outputformat infr
+aga --output /tmp/
+ []
+
+[6] [7] [8
+
+]
+Chapter 3.
 LaTeX Font Info:    Font shape `T1/txtt/m/it' in size <10> not available
-(Font)              Font shape `T1/txtt/m/sl' tried instead on input line 541.
+(Font)              Font shape `T1/txtt/m/sl' tried instead on input line 538.
+[9]
 LaTeX Font Info:    Trying to load font information for TS1+txtt on input line 
 1.
  (/usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd
 File: ts1txtt.fd 2000/12/15 v3.1
 )
-Underfull \hbox (badness 10000) in paragraph at lines 575--577
+Underfull \hbox (badness 10000) in paragraph at lines 572--574
 \TS1/txtt/m/n/10 ``\T1/txtt/m/n/10 grid\TS1/txtt/m/n/10 ``\T1/txtt/m/n/10 s, or
  other logical groupings. In these cases there will be an outer JSON block
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 575--577
+Underfull \hbox (badness 10000) in paragraph at lines 572--574
 \T1/txtt/m/n/10 with its own metadata structure, which will vary by the type of
  grouping. So a \TS1/txtt/m/n/10 ``\T1/txtt/m/n/10 line
  []
 
-[6]
-Overfull \vbox (6.47963pt too high) detected at line 630
+
+Overfull \vbox (1.11137pt too high) detected at line 627
  []
 
-[7] [8] (./ncpag2s-clc.ind) [9] (./ncpag2s-clc.aux)
+[10] [11] [12
+
+]
+Chapter 4.
+[13] (./ncpag2s-clc.ind) [14] (./ncpag2s-clc.aux)
 Package rerunfilecheck Info: File `ncpag2s-clc.out' has not changed.
-(rerunfilecheck)             Checksum: DD6AC533007C33F36B9EA87B204091E6;3666.
+(rerunfilecheck)             Checksum: 750F3EF96E354C426DF7F7E97E38185D;3419.
  ) 
 Here is how much of TeX's memory you used:
- 14643 strings out of 478287
- 233095 string characters out of 5849289
- 630710 words of memory out of 5000000
- 32435 multiletter control sequences out of 15000+600000
- 524397 words of font info for 73 fonts, out of 8000000 for 9000
+ 14638 strings out of 478287
+ 232801 string characters out of 5849289
+ 622511 words of memory out of 5000000
+ 32428 multiletter control sequences out of 15000+600000
+ 518548 words of font info for 71 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 70i,12n,76p,1047b,497s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 70i,11n,76p,1047b,497s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/tex-gyre/q-ec.enc}{/usr/share/texmf/fonts/e
 nc/dvips/tex-gyre/q-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
@@ -921,10 +932,10 @@ usr/share/texmf/fonts/type1/public/tex-gyre/qtmri.pfb></usr/share/texlive/texmf
 s/type1/public/txfonts/t1xtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
 lic/txfonts/t1xtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts
 /tcxtt.pfb>
-Output written on ncpag2s-clc.pdf (13 pages, 192101 bytes).
+Output written on ncpag2s-clc.pdf (18 pages, 196244 bytes).
 PDF statistics:
- 233 PDF objects out of 1000 (max. 8388607)
- 197 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
- 197 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 272 PDF objects out of 1000 (max. 8388607)
+ 230 compressed objects within 3 object streams
+ 40 named destinations out of 1000 (max. 500000)
+ 189 words of extra memory for PDF output out of 10000 (max. 10000000)
 

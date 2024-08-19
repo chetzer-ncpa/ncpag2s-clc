@@ -12,6 +12,6 @@ _______________________________________
 	:maxdepth: 2
 	
 	overview
+	authorship
 	userguide
 	formats
-	authorship

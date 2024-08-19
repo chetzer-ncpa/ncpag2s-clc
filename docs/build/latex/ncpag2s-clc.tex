@@ -60,7 +60,7 @@
 
 
 \title{ncpag2s\sphinxhyphen{}clc}
-\date{Jul 25, 2024}
+\date{Aug 19, 2024}
 \release{1.0.0}
 \author{Claus Hetzer}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -77,34 +77,31 @@
 
 
 
-\chapter{Contents}
-\label{\detokenize{index:contents}}
-
-\section{Overview}
+\chapter{Overview}
 \label{\detokenize{overview:overview}}\label{\detokenize{overview:id1}}\label{\detokenize{overview::doc}}
 \sphinxAtStartPar
 The \sphinxstylestrong{ncpag2s\sphinxhyphen{}clc} package provides a convenient command\sphinxhyphen{}line interface for retrieving data from the NCPA\sphinxhyphen{}G2S system.  Prior to development, data retrieval required filling in multiple web forms and waiting for a batch process to complete and a download link to be sent by email.  Now, data requests can be submitted directly (and anonymously) to the server, which will fulfill them synchronously.
 
 
-\subsection{Installation}
+\section{Installation}
 \label{\detokenize{overview:installation}}
 \sphinxAtStartPar
 Just download the code tree from its GitHub \sphinxhref{https://github.com/chetzer-ncpa/ncpag2s-clc}{repository} and optionally add the root directory of the repository to your PATH. No additional packages are required.
 
 
-\subsection{Operation}
+\section{Operation}
 \label{\detokenize{overview:operation}}
 \sphinxAtStartPar
 The client is operated through the \sphinxstylestrong{\textasciigrave{}\textasciigrave{}ncpag2s.py\textasciigrave{}\textasciigrave{}} script, with the first argument being the subcommand and subsequent arguments being the flags and options necessary. The client will parse the arguments, generate and submit the necessary HTTP requests, and format the responses as requested.  Subcommands can be listed by running \sphinxcode{\sphinxupquote{ncpag2s.py help}}, with more detailed help text available for each subcommand from \sphinxcode{\sphinxupquote{ncpag2s.py help {[}subcommand{]}}}.  Options and flags will vary between subcommands but will be consistent when the meaning is roughly the same.
 
 
-\subsection{Output}
+\section{Output}
 \label{\detokenize{overview:output}}
 \sphinxAtStartPar
 Output is ASCII text and can be specified in JSON or NCPAprop format.  Grid requests may also be output in InfraGA format.
 
 
-\subsection{Quick Example}
+\section{Quick Example}
 \label{\detokenize{overview:quick-example}}
 \sphinxAtStartPar
 With \sphinxcode{\sphinxupquote{ncpag2s.py}} in your path, enter:
@@ -116,25 +113,25 @@ With \sphinxcode{\sphinxupquote{ncpag2s.py}} in your path, enter:
 All request commands will be in similar formats, with the switchboard program \sphinxcode{\sphinxupquote{ncpag2s.py}}, the subcommand (in this case \sphinxcode{\sphinxupquote{point}}), and flags following.
 
 
-\section{User Guide}
+\chapter{User Guide}
 \label{\detokenize{userguide:user-guide}}\label{\detokenize{userguide:userguide}}\label{\detokenize{userguide::doc}}
 \sphinxAtStartPar
 This section will go into greater detail about the use of the various available subcommands and their flags.  Each subcommand has help text that can be accessed with \sphinxcode{\sphinxupquote{ncpag2s.py help {[}subcommand{]}}}.
 
 
-\subsection{Time Conventions}
+\section{Time Conventions}
 \label{\detokenize{userguide:time-conventions}}
 \sphinxAtStartPar
 G2S data is generally available hourly after 1 January 2011, and every 6 hours between 1 January 2003 and 31 December 2010.  Thus, there is no reason to specify times to any precision greater than 1 hour.  In all cases, subcommands require dates and times to be specified, either singly or as a range.  In each case, dates and hours are specified separately.  Dates can be in any ISO8601\sphinxhyphen{}compliant format (e.g. 2023\sphinxhyphen{}08\sphinxhyphen{}01) while hours are specified as integers from 0\sphinxhyphen{}23.  All times are in UTC.
 
 
-\subsection{Output Formats}
+\section{Output Formats}
 \label{\detokenize{userguide:output-formats}}
 \sphinxAtStartPar
 In all cases, \sphinxcode{\sphinxupquote{json}} and \sphinxcode{\sphinxupquote{ncpaprop}} outputs are available.  Others may be available for specific subcommands.  For details on these formats, see Data Formats.
 
 
-\subsection{\sphinxstyleliteralintitle{\sphinxupquote{checktime}}: Confirm data availability}
+\section{\sphinxstyleliteralintitle{\sphinxupquote{checktime}}: Confirm data availability}
 \label{\detokenize{userguide:checktime-confirm-data-availability}}
 \sphinxAtStartPar
 This subcommand queries the G2S database to verify that data is available for the date and time requested.  The command will return either “Time {[}datetime{]} is available” or “Time {[}datetime{]} is not available”.
@@ -168,7 +165,7 @@ The UTC date and hour for the grid file.
 \end{description}
 
 
-\subsection{\sphinxstyleliteralintitle{\sphinxupquote{point}}: A single geographic point}
+\section{\sphinxstyleliteralintitle{\sphinxupquote{point}}: A single geographic point}
 \label{\detokenize{userguide:point-a-single-geographic-point}}
 \sphinxAtStartPar
 This subcommand will extract profile(s) at one or more times at a single geographic point (i.e. one latitude/longitude pair).  Usage is:
@@ -239,7 +236,7 @@ The destination for the output data.  The default is to print to the screen.  Fo
 \end{description}
 
 
-\subsection{\sphinxstyleliteralintitle{\sphinxupquote{line}}: An evenly\sphinxhyphen{}spaced line of points}
+\section{\sphinxstyleliteralintitle{\sphinxupquote{line}}: An evenly\sphinxhyphen{}spaced line of points}
 \label{\detokenize{userguide:line-an-evenly-spaced-line-of-points}}
 \sphinxAtStartPar
 This subcommand will extract an evenly\sphinxhyphen{}spaced great\sphinxhyphen{}circle line of profiles between two latitude/longitude pairs at one or more times.  Usage is:
@@ -318,7 +315,7 @@ The destination for the output data.  The default is to print to the screen.  Fo
 \end{description}
 
 
-\subsection{\sphinxstyleliteralintitle{\sphinxupquote{grid}}: An evenly\sphinxhyphen{}spaced line of points}
+\section{\sphinxstyleliteralintitle{\sphinxupquote{grid}}: An evenly\sphinxhyphen{}spaced line of points}
 \label{\detokenize{userguide:grid-an-evenly-spaced-line-of-points}}
 \sphinxAtStartPar
 This subcommand will extract an evenly\sphinxhyphen{}spaced grid of profiles in Mercator projection (i.e. evenly\sphinxhyphen{}spaced latitude and longitude intervals, not necessarily in physical distance).  Usage is:
@@ -400,7 +397,7 @@ The destination for the output data.  The default is to print to the screen.  Fo
 \end{description}
 
 
-\subsection{\sphinxstyleliteralintitle{\sphinxupquote{grid}}: An evenly\sphinxhyphen{}spaced line of points}
+\section{\sphinxstyleliteralintitle{\sphinxupquote{grid}}: An evenly\sphinxhyphen{}spaced line of points}
 \label{\detokenize{userguide:id1}}
 \sphinxAtStartPar
 This subcommand will extract an evenly\sphinxhyphen{}spaced grid of profiles in Mercator projection (i.e. evenly\sphinxhyphen{}spaced latitude and longitude intervals, not necessarily in physical distance).  Usage is:
@@ -482,7 +479,7 @@ The destination for the output data.  The default is to print to the screen.  Fo
 \end{description}
 
 
-\subsection{\sphinxstyleliteralintitle{\sphinxupquote{raw}}: A raw G2S coefficient file}
+\section{\sphinxstyleliteralintitle{\sphinxupquote{raw}}: A raw G2S coefficient file}
 \label{\detokenize{userguide:raw-a-raw-g2s-coefficient-file}}
 \sphinxAtStartPar
 This subcommand will return a raw G2S coefficient file, for use if you are authorized to possess the G2S extraction software.  Usage is:
@@ -517,10 +514,10 @@ Write the coefficients to this filename.  Default will let the server decide.
 \end{description}
 
 
-\section{Data Formats}
+\chapter{Data Formats}
 \label{\detokenize{formats:data-formats}}\label{\detokenize{formats:formats}}\label{\detokenize{formats::doc}}
 
-\subsection{JSON Format}
+\section{JSON Format}
 \label{\detokenize{formats:json-format}}
 \sphinxAtStartPar
 The default JSON format contains a “metadata” structure, a “data” structure containing one or more “parameter” structures, and some bookkeeping entries at the end.  In more detail, the format is structured as follows:
@@ -602,7 +599,7 @@ etc.  In these cases, additional fields will often be added to the metadata bloc
 This nesting behavior is extended as needed. For example if lines are requested for multiple times, the individual lines will be presented as a comma\sphinxhyphen{}separated series of the above structure, enclosed within square brackets.
 
 
-\subsection{NCPAprop Format}
+\section{NCPAprop Format}
 \label{\detokenize{formats:ncpaprop-format}}
 \sphinxAtStartPar
 This is the format used by the \sphinxhref{https://github.com/chetzer-ncpa/ncpaprop-release}{ncpaprop} package.  It consists of a series of comments, interspersed with formatted header lines that describe the data structure, followed by a set of space\sphinxhyphen{}separated columns of ASCII data, one column per atmospheric property.  An example of the format would be:
@@ -636,13 +633,13 @@ etc.  In this example there are 6 columns of data.  The formatted header lines b
 Because this format was designed for single\sphinxhyphen{}location profiles only, multi\sphinxhyphen{}profile requests have their own formats.  Line requests are output as a directory \sphinxcode{\sphinxupquote{profiles}} containing a series of single\sphinxhyphen{}profile files, one per point, and a summary file associating each profile with its distance from the beginning of the line.  Grid requests are returned similarly, except the summary file associates each profile with its latitude/longitude coordinates.
 
 
-\subsection{InfraGA Format}
+\section{InfraGA Format}
 \label{\detokenize{formats:infraga-format}}
 \sphinxAtStartPar
 This data format is available for grid requests only and is intended to work with the range\sphinxhyphen{}dependent modules of the LANL \sphinxhref{https://github.com/LANL-Seismoacoustics/infraGA}{InfraGA} geometric acoustics package.  It is similar to the \sphinxcode{\sphinxupquote{ncpaprop}} format, except that two summary files are created, one with the latitude points and one with the longitude points, and the filename structure is changed to that expected by the range\sphinxhyphen{}dependent InfraGA modules.  A third file \sphinxcode{\sphinxupquote{flags.txt}} is also generated, providing the flags to use with InfraGA in order to read the grid files.
 
 
-\section{Authorship, Acknowledgements, and References}
+\chapter{Authorship, Acknowledgements, and References}
 \label{\detokenize{authorship:authorship-acknowledgements-and-references}}\label{\detokenize{authorship:authorship}}\label{\detokenize{authorship::doc}}
 \sphinxAtStartPar
 The NCPA\sphinxhyphen{}G2S Command Line Client was developed by Claus Hetzer at the National Center for Physical Acoustics, the University of Mississippi, with the support of the Sandia National Laboratories under award \#2515096.
@@ -655,7 +652,7 @@ Claus Hetzer
 \sphinxhref{mailto:claus@olemiss.edu}{claus@olemiss.edu}
 
 
-\subsection{Citing NCPA\sphinxhyphen{}G2S and the CLI}
+\section{Citing NCPA\sphinxhyphen{}G2S and the CLI}
 \label{\detokenize{authorship:citing-ncpa-g2s-and-the-cli}}
 \sphinxAtStartPar
 Publications that make use of data from the NCPA\sphinxhyphen{}G2S system are kindly requested to cite one or more of the following references, as appropriate:
@@ -678,18 +675,18 @@ Drob, D.P. (2019). “Meteorology, climatology, and upper atmospheric compositio
 \item[{For data from the NCPA\sphinxhyphen{}G2S System:}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-Hetzer, C.H., Drob, D.P., \& Zabel, K. (2019). “The NCPA\sphinxhyphen{}G2S request system”.  \sphinxurl{https://g2s.ncpa.olemiss.edu} \_.
+Hetzer, C.H., Drob, D.P., \& Zabel, K. (2019). “The NCPA\sphinxhyphen{}G2S request system”.  \sphinxurl{https://g2s.ncpa.olemiss.edu}.
 
 \item {} 
 \sphinxAtStartPar
-Hetzer, C.H. (2024). “The NCPAG2S Command\sphinxhyphen{}Line Client”.
+Hetzer, C.H. (2024). “The NCPAG2S Command\sphinxhyphen{}Line Client”.  \sphinxurl{https://github.com/chetzer-ncpa/ncpag2s-clc}.  doi: \sphinxhref{https://zenodo.org/doi/10.5281/zenodo.13345069}{10.5281/zenodo.13345069}.
 
 \end{itemize}
 
 \end{description}
 
 
-\subsection{G2S Data Sources}
+\section{G2S Data Sources}
 \label{\detokenize{authorship:g2s-data-sources}}
 \sphinxAtStartPar
 The NCPA G2S system generates its models using the following data sources and models:

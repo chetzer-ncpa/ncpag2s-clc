@@ -25,7 +25,7 @@ For the G2S model itself:
 
 For data from the NCPA-G2S System:
 	* Hetzer, C.H., Drob, D.P., & Zabel, K. (2019). "The NCPA-G2S request system".  https://g2s.ncpa.olemiss.edu _.
-	* Hetzer, C.H. (2024). "The NCPAG2S Command-Line Client".  
+	* Hetzer, C.H. (2024). "The NCPAG2S Command-Line Client".  https://github.com/chetzer-ncpa/ncpag2s-clc _.  doi: `10.5281/zenodo.13345069. <https://zenodo.org/doi/10.5281/zenodo.13345069>`_.
 
 ----------------
 G2S Data Sources
