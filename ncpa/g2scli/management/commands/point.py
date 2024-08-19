@@ -10,9 +10,9 @@ import re
 import json
 import copy
 from io import StringIO
+import sys
 
 from ncpa.g2scli.options import add_date_arguments, parse_datetimes, add_point_location_arguments
-from ncpa.g2scli.commands import CommandError
 from ncpa.g2scli.requests import request_and_write
 
 ZIP_RE = re.compile('.*filename="?(.+\.zip)')
@@ -59,6 +59,7 @@ class Command(BaseCommand):
         params['outputformat'] = tmpformat
         
         profiles = G2SProfileSet()
+        warnings = []
         for t in times:
             url = format_url('point', time=t, **params)
             holder = StringIO()
@@ -68,9 +69,11 @@ class Command(BaseCommand):
                                   timeout=timeout, 
                                   chunksize=chunksize, 
                                   encoding=encoding)
+                profiles.append(json.loads(holder.getvalue(),cls=G2SProfileDecoder))
             except HTTPError as err:
-                raise CommandError(f'Server returned error {err.code}: {err.reason}')
-            profiles.append(json.loads(holder.getvalue(),cls=G2SProfileDecoder))
+                # raise CommandError(f'Server returned error {err.code}: {err.reason}')
+                warnings.append(f'Error {err.code}: {err.reason}')
+            holder.close()
         
         formatargs={}
         if options['output']:
@@ -78,3 +81,10 @@ class Command(BaseCommand):
         if len(profiles) == 1:
             profiles = profiles[0]
         G2SFormatterFactory.factory.create(finalformat).format(profiles,**formatargs)
+        
+        if warnings:
+            sys.stderr.write('\n\nNOTE: Server returned the following errors:')
+            sys.stderr.write('\n'.join(warnings))
+            sys.stderr.write('\n')
+
+        

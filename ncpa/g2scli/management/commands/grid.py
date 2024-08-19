@@ -3,6 +3,7 @@ import json
 import copy
 from io import StringIO
 from urllib.error import HTTPError
+import sys
 
 from ncpa.g2s.formatters import G2SProfileDecoder, G2SFormatterFactory
 
@@ -65,6 +66,7 @@ class Command(BaseCommand):
         
         url = format_url('grid', time=t, **params)
         holder = StringIO(initial_value='')
+        warnings = []
         try:
             request_and_write(
                 url, 
@@ -72,6 +74,7 @@ class Command(BaseCommand):
                 timeout=timeout, 
                 chunksize=chunksize, 
                 encoding=encoding)
+            
         except HTTPError as err:
             raise CommandError(f'Server returned error {err.code}: {err.reason}')
         jsontext = holder.getvalue()
@@ -83,3 +86,5 @@ class Command(BaseCommand):
         if options['output']:
             formatargs['output'] = options['output']
         G2SFormatterFactory.factory.create(finalformat).format(grid,**formatargs)
+        
+        

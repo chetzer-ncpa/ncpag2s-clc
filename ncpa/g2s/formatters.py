@@ -119,7 +119,7 @@ class G2SFormatter:
 
 class NCPAPropG2SFormatter(G2SFormatter):
     def __init__(self,*args,**kwargs):
-        self.ext = 'ncpaprop'
+        self.ext = 'met'
         super().__init__(*args,**kwargs)
         
     def filename(self,profile):

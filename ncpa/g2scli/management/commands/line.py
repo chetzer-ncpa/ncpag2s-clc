@@ -3,10 +3,11 @@ import json
 import copy
 from io import StringIO
 from urllib.error import HTTPError
+import sys
 
 from ncpa.g2s.formatters import G2SProfileDecoder, G2SFormatterFactory
 
-from ncpa.g2scli.commands import BaseCommand, CommandError
+from ncpa.g2scli.commands import BaseCommand
 from ncpa.g2scli.settings import config
 from ncpa.g2scli.urls import format_url
 from ncpa.g2scli.options import add_date_arguments, parse_datetimes, add_line_location_arguments
@@ -61,6 +62,7 @@ class Command(BaseCommand):
         params['outputformat'] = tmpformat
         
         linelist = []
+        warnings = []
         for t in times:
             url = format_url('line', time=t, **params)
             holder = StringIO(initial_value='')
@@ -70,13 +72,13 @@ class Command(BaseCommand):
                                   timeout=timeout, 
                                   chunksize=chunksize, 
                                   encoding=encoding)
+            
+                jsontext = holder.getvalue()
+                line = json.loads(jsontext,cls=G2SProfileDecoder)
+                linelist.append(line)
             except HTTPError as err:
-                raise CommandError(f'Server returned error {err.code}: {err.reason}')
-            jsontext = holder.getvalue()
-            line = json.loads(jsontext,cls=G2SProfileDecoder)
-            linelist.append(line)
+                warnings.append(f'Server returned error {err.code}: {err.reason}')
             holder.close()
-        
         formatargs={}
         if options['output']:
             formatargs['output'] = options['output']
@@ -84,4 +86,7 @@ class Command(BaseCommand):
             linelist[0] if len(linelist) == 1 else linelist,
             **formatargs)
         
-       
+        if warnings:
+            sys.stderr.write('\n\nNOTE: Server returned the following errors:')
+            sys.stderr.write('\n'.join(warnings))
+            sys.stderr.write('\n')
