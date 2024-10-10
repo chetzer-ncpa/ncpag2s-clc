@@ -138,60 +138,8 @@ where ``[flags]`` is one or more of the following, with flags that require each 
 	
 	``ncpag2s.py line --date 2023-08-10 --hour 0 --startlat 34.39 --startlon -89.51 --endlat 35.23 --endlon -106.66 --points 21 --outputformat ncpaprop --output /tmp/ms_to_abq``
 
-
 -----------------------------------------
-``grid``: An evenly-spaced line of points
------------------------------------------
-
-This subcommand will extract an evenly-spaced grid of profiles in Mercator projection (i.e. evenly-spaced latitude and longitude intervals, not necessarily in physical distance).  Usage is:
-
-``ncpag2s.py grid [flags]``
-
-where ``[flags]`` is one or more of the following, with flags that require each other grouped together:
-
-**Required:**
-
-``--startlatitude [latitude]``
-``--startlongitude [longitude]``
-``--endlatitude [latitude]``
-``--endlongitude [longitude]``
-	The starting and ending latitude/longitude coordinates of the grid.  These will correspond to the lower-left (i.e. southwesternmost) and upper-right (i.e. northeasternmost) corners of the grid, respectively.  Coordinates are expected to be in the ranges \[-90,90\] and \[-180,180\], respectively.
-	
-``--latpoints``
-``--lonpoints``
-	The number of latitude and longitude points to extract in the grid.
-
-**One of the following groups is required:**
-
-``--date [date]``
-``--hour [hour]``
-	The UTC date and hour  at which to extract the profile.
-	
-**OR**
-
-``--startdate [date]``
-``--starthour [hour]``
-``--enddate [date]``
-``--endhour [hour]``
-``--every [interval]``
-	The starting and ending dates and times for a range of multiple times, extracted at the requested interval (in hours).
-	
-**Optional:**
-
-``--outputformat [json|ncpaprop|infraga]``
-	Specifies the format in which the profile(s) are output.  The default is ``json``.
-	
-``--output [destination]``
-	The destination for the output data.  The default is to print to the screen.  For ``json`` output this should be a file.  For ``ncpaprop`` or ``infraga`` output this should be a directory.
-
-**Example Commands**
-	``ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.0 --startlon -89.0 --endlat 40.0 --endlon -96.0 --latpoints 13 --lonpoints 15``
-	
-	``ncpag2s.py grid --date 2023-08-10 --hour 0 --startlat 34.39 --startlon -89.51 --endlat 35.23 --endlon -106.66 --points 21 --outputformat infraga --output /tmp/testgrid``
-
-
------------------------------------------
-``grid``: An evenly-spaced line of points
+``grid``: An evenly-spaced grid of points
 -----------------------------------------
 
 This subcommand will extract an evenly-spaced grid of profiles in Mercator projection (i.e. evenly-spaced latitude and longitude intervals, not necessarily in physical distance).  Usage is:

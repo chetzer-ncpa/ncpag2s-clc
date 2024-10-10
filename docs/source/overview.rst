@@ -8,6 +8,12 @@ Overview
 The **ncpag2s-clc** package provides a convenient command-line interface for retrieving data from the NCPA-G2S system.  Prior to development, data retrieval required filling in multiple web forms and waiting for a batch process to complete and a download link to be sent by email.  Now, data requests can be submitted directly (and anonymously) to the server, which will fulfill them synchronously.
 
 ------------
+Requirements
+------------
+
+The **ncpag2s-clc** package requires Python version 3.9 or greater.  All package dependencies are part of the base Python distribution. 
+
+------------
 Installation
 ------------
 

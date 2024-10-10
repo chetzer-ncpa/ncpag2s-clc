@@ -60,7 +60,7 @@
 
 
 \title{ncpag2s\sphinxhyphen{}clc}
-\date{Aug 19, 2024}
+\date{Oct 10, 2024}
 \release{1.0.0}
 \author{Claus Hetzer}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -81,6 +81,12 @@
 \label{\detokenize{overview:overview}}\label{\detokenize{overview:id1}}\label{\detokenize{overview::doc}}
 \sphinxAtStartPar
 The \sphinxstylestrong{ncpag2s\sphinxhyphen{}clc} package provides a convenient command\sphinxhyphen{}line interface for retrieving data from the NCPA\sphinxhyphen{}G2S system.  Prior to development, data retrieval required filling in multiple web forms and waiting for a batch process to complete and a download link to be sent by email.  Now, data requests can be submitted directly (and anonymously) to the server, which will fulfill them synchronously.
+
+
+\section{Requirements}
+\label{\detokenize{overview:requirements}}
+\sphinxAtStartPar
+The \sphinxstylestrong{ncpag2s\sphinxhyphen{}clc} package requires Python version 3.9 or greater.  All package dependencies are part of the base Python distribution.
 
 
 \section{Installation}
@@ -315,90 +321,8 @@ The destination for the output data.  The default is to print to the screen.  Fo
 \end{description}
 
 
-\section{\sphinxstyleliteralintitle{\sphinxupquote{grid}}: An evenly\sphinxhyphen{}spaced line of points}
-\label{\detokenize{userguide:grid-an-evenly-spaced-line-of-points}}
-\sphinxAtStartPar
-This subcommand will extract an evenly\sphinxhyphen{}spaced grid of profiles in Mercator projection (i.e. evenly\sphinxhyphen{}spaced latitude and longitude intervals, not necessarily in physical distance).  Usage is:
-
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{ncpag2s.py grid {[}flags{]}}}
-
-\sphinxAtStartPar
-where \sphinxcode{\sphinxupquote{{[}flags{]}}} is one or more of the following, with flags that require each other grouped together:
-
-\sphinxAtStartPar
-\sphinxstylestrong{Required:}
-
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}startlatitude {[}latitude{]}}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}startlongitude {[}longitude{]}}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}endlatitude {[}latitude{]}}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}endlongitude {[}longitude{]}}}
-\begin{quote}
-
-\sphinxAtStartPar
-The starting and ending latitude/longitude coordinates of the grid.  These will correspond to the lower\sphinxhyphen{}left (i.e. southwesternmost) and upper\sphinxhyphen{}right (i.e. northeasternmost) corners of the grid, respectively.  Coordinates are expected to be in the ranges {[}\sphinxhyphen{}90,90{]} and {[}\sphinxhyphen{}180,180{]}, respectively.
-\end{quote}
-
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}latpoints}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}lonpoints}}
-\begin{quote}
-
-\sphinxAtStartPar
-The number of latitude and longitude points to extract in the grid.
-\end{quote}
-
-\sphinxAtStartPar
-\sphinxstylestrong{One of the following groups is required:}
-
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}date {[}date{]}}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}hour {[}hour{]}}}
-\begin{quote}
-
-\sphinxAtStartPar
-The UTC date and hour  at which to extract the profile.
-\end{quote}
-
-\sphinxAtStartPar
-\sphinxstylestrong{OR}
-
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}startdate {[}date{]}}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}starthour {[}hour{]}}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}enddate {[}date{]}}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}endhour {[}hour{]}}}
-\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}every {[}interval{]}}}
-\begin{quote}
-
-\sphinxAtStartPar
-The starting and ending dates and times for a range of multiple times, extracted at the requested interval (in hours).
-\end{quote}
-
-\sphinxAtStartPar
-\sphinxstylestrong{Optional:}
-\begin{description}
-\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}outputformat {[}json|ncpaprop|infraga{]}}}}] \leavevmode
-\sphinxAtStartPar
-Specifies the format in which the profile(s) are output.  The default is \sphinxcode{\sphinxupquote{json}}.
-
-\item[{\sphinxcode{\sphinxupquote{\sphinxhyphen{}\sphinxhyphen{}output {[}destination{]}}}}] \leavevmode
-\sphinxAtStartPar
-The destination for the output data.  The default is to print to the screen.  For \sphinxcode{\sphinxupquote{json}} output this should be a file.  For \sphinxcode{\sphinxupquote{ncpaprop}} or \sphinxcode{\sphinxupquote{infraga}} output this should be a directory.
-
-\item[{\sphinxstylestrong{Example Commands}}] \leavevmode
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{ncpag2s.py grid \sphinxhyphen{}\sphinxhyphen{}date 2023\sphinxhyphen{}08\sphinxhyphen{}10 \sphinxhyphen{}\sphinxhyphen{}hour 0 \sphinxhyphen{}\sphinxhyphen{}startlat 34.0 \sphinxhyphen{}\sphinxhyphen{}startlon \sphinxhyphen{}89.0 \sphinxhyphen{}\sphinxhyphen{}endlat 40.0 \sphinxhyphen{}\sphinxhyphen{}endlon \sphinxhyphen{}96.0 \sphinxhyphen{}\sphinxhyphen{}latpoints 13 \sphinxhyphen{}\sphinxhyphen{}lonpoints 15}}
-
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{ncpag2s.py grid \sphinxhyphen{}\sphinxhyphen{}date 2023\sphinxhyphen{}08\sphinxhyphen{}10 \sphinxhyphen{}\sphinxhyphen{}hour 0 \sphinxhyphen{}\sphinxhyphen{}startlat 34.39 \sphinxhyphen{}\sphinxhyphen{}startlon \sphinxhyphen{}89.51 \sphinxhyphen{}\sphinxhyphen{}endlat 35.23 \sphinxhyphen{}\sphinxhyphen{}endlon \sphinxhyphen{}106.66 \sphinxhyphen{}\sphinxhyphen{}points 21 \sphinxhyphen{}\sphinxhyphen{}outputformat infraga \sphinxhyphen{}\sphinxhyphen{}output /tmp/testgrid}}
-
-\end{description}
-
-
-\section{\sphinxstyleliteralintitle{\sphinxupquote{grid}}: An evenly\sphinxhyphen{}spaced line of points}
-\label{\detokenize{userguide:id1}}
+\section{\sphinxstyleliteralintitle{\sphinxupquote{grid}}: An evenly\sphinxhyphen{}spaced grid of points}
+\label{\detokenize{userguide:grid-an-evenly-spaced-grid-of-points}}
 \sphinxAtStartPar
 This subcommand will extract an evenly\sphinxhyphen{}spaced grid of profiles in Mercator projection (i.e. evenly\sphinxhyphen{}spaced latitude and longitude intervals, not necessarily in physical distance).  Usage is:
 

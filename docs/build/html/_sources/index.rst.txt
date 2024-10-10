@@ -4,14 +4,10 @@
 NCPA-G2S Command-Line Interface
 =======================================
 
-_______________________________________
-Contents
-_______________________________________
-
 .. toctree::
 	:maxdepth: 2
 	
 	overview
-	authorship
 	userguide
 	formats
+	authorship
