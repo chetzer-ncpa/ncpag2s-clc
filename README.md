@@ -2,7 +2,7 @@
 ## Version 1.0.0
 
 ## Installation
-Just download and optionally place the root directory of the repository in your PATH.  No additional packages are required.
+Just download and optionally place the root directory of the repository in your PATH.  Python version **3.9** or higher is required.  No additional packages are required.
 
 ## Operation
 The client is operated through the **ncpag2s.py** script, with the first argument being the subcommand and subsequent arguments being the flags and options necessary.  The client will parse the arguments, generate and submit the necessary HTTP requests, and format the responses as requested.
