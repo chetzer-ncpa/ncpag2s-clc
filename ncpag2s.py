@@ -3,7 +3,9 @@
 import sys
 import os
 
-
+MIN_PYTHON_VERSION = (3,9)
+if sys.version_info < MIN_PYTHON_VERSION:
+    sys.exit("Python %s.%s or later is required.\n" % MIN_PYTHON_VERSION)
 
 def main():
     """Run administrative tasks."""
