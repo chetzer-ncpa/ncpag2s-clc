@@ -2,7 +2,6 @@ from ncpa.g2scli import G2SClient
 import matplotlib.pyplot as plt
 from datetime import datetime, timezone
 import numpy as np
-from numpy import NZERO
 
 client = G2SClient()
 t = datetime(2024,10,15,0,tzinfo=timezone.utc)
