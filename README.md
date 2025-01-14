@@ -11,6 +11,11 @@ Subcommands can be listed by running `ncpag2s.py help`, with more detailed help 
 
 Options and flags will vary between subcommands but will be consistent when the meaning is roughly the same.  Generally speaking, they will fall into the following categories:
 
+### Citation
+If you use this client to obtain data for publication, please cite it using the following citation:
+
+Hetzer, C.H. (2024).  "The NCPAG2S command line client".  https://github.com/chetzer-ncpa/ncpag2s-clc.  doi: 10.5281/zenodo.13345069.
+
 ### Time
 The time(s) at which data is to be returned are indicated using `--date` and `--hour` flags for single-time requests, or `--startdate`, `--starthour`, `--enddate`, `--endhour`, and `--every` flags for time ranges.  Dates can be parsed from any ISO8601-compliant format; examples will be formatted as YYYY-MM-DD.  Times are treated as integer hours, UTC.  Be aware that multi-time requests are slower to complete than single-time requests, as each date/time requires a separate request be sent to the server.
 
